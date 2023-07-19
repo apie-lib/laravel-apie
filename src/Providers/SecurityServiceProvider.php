@@ -1,8 +1,8 @@
 <?php
 namespace Apie\LaravelApie\Providers;
 
-use Apie\ApieBundle\Security\ApieUserProvider;
 use Apie\LaravelApie\Wrappers\Security\ApieUserAuthenticator;
+use Apie\LaravelApie\Wrappers\Security\ApieUserProvider;
 use Apie\LaravelApie\Wrappers\Security\UserAuthenticationContextBuilder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
