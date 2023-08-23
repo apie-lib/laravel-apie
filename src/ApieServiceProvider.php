@@ -38,6 +38,15 @@ class ApieServiceProvider extends ServiceProvider
             ConsoleServiceProvider::class,
             SerializerServiceProvider::class,
         ],
+        'enable_doctrine_entity_converter' => [
+            CoreServiceProvider::class,
+            DoctrineEntityConverterProvicer::class,
+        ],
+        'enable_doctrine_entity_datalayer' => [
+            CoreServiceProvider::class,
+            DoctrineEntityConverterProvicer::class,
+            DoctrineEntityDatalayerServiceProvider::class,
+        ],
         'enable_security' => [
             CommonServiceProvider::class,
             SerializerServiceProvider::class,
