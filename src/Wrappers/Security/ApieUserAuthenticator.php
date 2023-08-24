@@ -5,7 +5,6 @@ namespace Apie\LaravelApie\Wrappers\Security;
 use Apie\Common\ApieFacade;
 use Apie\Common\ContextConstants;
 use Apie\Common\RequestBodyDecoder;
-use Apie\Common\Wrappers\ApieUserDecorator;
 use Apie\Core\Actions\ActionInterface;
 use Apie\Core\ContextBuilders\ContextBuilderFactory;
 use Apie\Core\Entities\EntityInterface;
@@ -31,6 +30,9 @@ class ApieUserAuthenticator
             && 'verifyAuthentication' === $request->getAttribute(ContextConstants::METHOD_NAME);
     }
 
+    /**
+     * @return ApieUserDecorator<EntityInterface>|null
+     */
     public function authenticate(ServerRequestInterface $request): ?ApieUserDecorator
     {
         try {

@@ -2,6 +2,7 @@
 namespace Apie\LaravelApie\Wrappers\Security;
 
 use Apie\Common\Wrappers\AbstractApieUserDecorator;
+use Apie\Core\Entities\EntityInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 /**

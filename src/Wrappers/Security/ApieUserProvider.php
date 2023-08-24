@@ -2,8 +2,8 @@
 namespace Apie\LaravelApie\Wrappers\Security;
 
 use Apie\Common\ApieFacade;
-use Apie\Common\Wrappers\ApieUserDecorator;
 use Apie\Common\Wrappers\ApieUserDecoratorIdentifier;
+use Apie\Core\Entities\EntityInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 
@@ -13,6 +13,9 @@ class ApieUserProvider implements UserProvider
     {
     }
 
+    /**
+     * @return ApieUserDecorator<EntityInterface>
+     */
     public function retrieveById($identifier): ApieUserDecorator
     {
         $identifier = new ApieUserDecoratorIdentifier($identifier);
@@ -21,6 +24,9 @@ class ApieUserProvider implements UserProvider
         return new ApieUserDecorator($identifier, $entity);
     }
 
+    /**
+     * @return ApieUserDecorator<EntityInterface>|null
+     */
     public function retrieveByToken($identifier, $token): ?ApieUserDecorator
     {
         return null;
@@ -30,11 +36,19 @@ class ApieUserProvider implements UserProvider
     {
     }
 
+    /**
+     * @param array<int|string, mixed> $credentials
+     * @return ApieUserDecorator<EntityInterface>|null
+     */
     public function retrieveByCredentials(array $credentials): ?ApieUserDecorator
     {
         // TODO find the verifyAuthentication action...
+        return null;
     }
 
+    /**
+     * @param array<int|string, mixed> $credentials
+     */
     public function validateCredentials(Authenticatable $user, array $credentials): bool
     {
         // TODO find the verifyAuthentication action...

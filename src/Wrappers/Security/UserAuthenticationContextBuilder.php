@@ -17,10 +17,6 @@ class UserAuthenticationContextBuilder implements ContextBuilderInterface
                 $context = $context->withContext('authenticated', $user->getEntity());
             }
         }
-        $token = csrf_token();
-        if ($token) {
-            $context = $context->registerInstance($token);
-        }
 
         return $context;
     }

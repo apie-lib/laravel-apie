@@ -19,7 +19,7 @@ class ApieRouteLoader
     ) {
     }
 
-    public function loadRoutes(RouteRegistrar $routeRegistrar)
+    public function loadRoutes(RouteRegistrar $routeRegistrar): void
     {
         if ($this->loaded === true) {
             throw new \RuntimeException('Do not load the "ApieRouteLoader" twice!');

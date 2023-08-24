@@ -6,6 +6,8 @@ use Apie\Common\CommonServiceProvider;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;
+use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
+use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\Faker\FakerServiceProvider;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
@@ -19,6 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ApieServiceProvider extends ServiceProvider
 {
+    /**
+     * @var array<string, array<int, class-string<ServiceProvider>>> $dependencies
+     */
     private array $dependencies = [
         'enable_cms' => [
             CommonServiceProvider::class,
@@ -40,11 +45,11 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_doctrine_entity_converter' => [
             CoreServiceProvider::class,
-            DoctrineEntityConverterProvicer::class,
+            DoctrineEntityConverterProvider::class,
         ],
         'enable_doctrine_entity_datalayer' => [
             CoreServiceProvider::class,
-            DoctrineEntityConverterProvicer::class,
+            DoctrineEntityConverterProvider::class,
             DoctrineEntityDatalayerServiceProvider::class,
         ],
         'enable_security' => [
@@ -63,7 +68,7 @@ class ApieServiceProvider extends ServiceProvider
         ],
     ];
 
-    public function boot()
+    public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
