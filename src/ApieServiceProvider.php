@@ -16,7 +16,9 @@ use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ApieServiceProvider extends ServiceProvider
@@ -77,6 +79,23 @@ class ApieServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../resources/apie.php', 'apie');
+
+        // add PSR-14 support if needed:
+        if (!$this->app->bound(EventDispatcherInterface::class)) {
+            $this->app->bind(EventDispatcherInterface::class, function () {
+                return new class($this->app->make(Dispatcher::class)) implements EventDispatcherInterface {
+                    public function __construct(private readonly Dispatcher $dispatcher)
+                    {
+                    }
+
+                    public function dispatch(object $event): object
+                    {
+                        $this->dispatcher->dispatch($event);
+                        return $event;
+                    }
+                };
+            });
+        }
 
         // fix for https://github.com/laravel/framework/issues/30415
         $this->app->extend(
