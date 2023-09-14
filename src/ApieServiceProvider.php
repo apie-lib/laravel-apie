@@ -9,7 +9,9 @@ use Apie\Core\CoreServiceProvider;
 use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\Faker\FakerServiceProvider;
+use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
+use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
 use Apie\LaravelApie\Providers\SecurityServiceProvider;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
@@ -112,8 +114,16 @@ class ApieServiceProvider extends ServiceProvider
             }
         );
 
+        $this->app->bind(ApieErrorRenderer::class, function () {
+            return new ApieErrorRenderer(
+                $this->app->bound(CmsErrorRenderer::class) ? $this->app->make(CmsErrorRenderer::class) : null,
+                $this->app->make(\Apie\Common\ErrorHandler\ApiErrorRenderer::class),
+                config('apie.cms.base_url')
+            );
+        });
+
         $this->app->bind(BoundedContextSelection::class, BoundedContextSelected::class);
-        
+
         $alreadyRegistered = [];
         foreach ($this->dependencies as $configKey => $dependencies) {
             if (config('apie.' . $configKey, false)) {
