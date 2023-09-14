@@ -14,6 +14,11 @@ class CmsServiceProvider extends CmsCmsServiceProvider
         $this->app->bind('apie.cms.dashboard_content', DashboardContents::class);
         // blade extensions?
 
-        $this->app->bind(DashboardContents::class);
+        $this->app->bind(DashboardContents::class, function () {
+            return new DashboardContents(
+                config('apie.cms.dashboard_template'),
+                []
+            );
+        });
     }
 }

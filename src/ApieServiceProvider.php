@@ -4,6 +4,7 @@ namespace Apie\LaravelApie;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\Interfaces\BoundedContextSelection;
+use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;
 use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
@@ -14,6 +15,7 @@ use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
 use Apie\LaravelApie\Providers\SecurityServiceProvider;
+use Apie\LaravelApie\Wrappers\Cms\DashboardContentFactory;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
@@ -121,7 +123,8 @@ class ApieServiceProvider extends ServiceProvider
                 config('apie.cms.base_url')
             );
         });
-
+        
+        $this->app->bind(DashboardContentFactoryInterface::class, DashboardContentFactory::class);
         $this->app->bind(BoundedContextSelection::class, BoundedContextSelected::class);
 
         $alreadyRegistered = [];
