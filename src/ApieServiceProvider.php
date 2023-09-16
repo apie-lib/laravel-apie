@@ -20,6 +20,7 @@ use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
+use Apie\ServiceProviderGenerator\TagMap;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -78,6 +79,7 @@ class ApieServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
+        TagMap::registerEvents($this->app);
     }
 
     public function register()
