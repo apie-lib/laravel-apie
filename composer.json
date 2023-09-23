@@ -19,6 +19,13 @@
       "Apie\\Tests\\LaravelApie\\": "tests/"
     }
   },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Apie\\LaravelApie\\ApieServiceProvider"
+        ]
+    }
+  },
   "require": {
     "php": ">=8.1",
     "apie/common": "self.version",
