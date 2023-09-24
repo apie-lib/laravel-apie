@@ -13,6 +13,7 @@ use Apie\Faker\FakerServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
+use Apie\LaravelApie\ErrorHandler\Handler;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
 use Apie\LaravelApie\Providers\SecurityServiceProvider;
 use Apie\LaravelApie\Wrappers\Cms\DashboardContentFactory;
@@ -21,6 +22,7 @@ use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
 use Apie\ServiceProviderGenerator\TagMap;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -124,6 +126,10 @@ class ApieServiceProvider extends ServiceProvider
                 $this->app->make(\Apie\Common\ErrorHandler\ApiErrorRenderer::class),
                 config('apie.cms.base_url')
             );
+        });
+
+        $this->app->extend(ExceptionHandler::class, function (ExceptionHandler $service) {
+            return new Handler($this->app, $service);
         });
         
         $this->app->bind(DashboardContentFactoryInterface::class, DashboardContentFactory::class);

@@ -3,10 +3,14 @@
 namespace Apie\LaravelApie\ErrorHandler;
 
 use Apie\Common\IntegrationTestLogger;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionsHandler;
+use Illuminate\Http\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class Handler extends ExceptionHandler
+class Handler extends ExceptionsHandler
 {
     /**
      * A list of the inputs that are never flashed for validation exceptions.
@@ -21,28 +25,36 @@ class Handler extends ExceptionHandler
 
     private static bool $alreadyRenderErrorPage = false;
 
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Throwable  $e
-     * @return void
-     */
-    public function report(Throwable $e)
+    public function __construct(
+        Container  $container,
+        private ExceptionHandler $internal
+    ) {
+        parent::__construct($container);
+    }
+
+    public function report(Throwable $e): void
     {
         IntegrationTestLogger::logException($e);
-        parent::report($e);
+        $this->internal->report($e);
+    }
+
+    public function shouldReport(Throwable $e): bool
+    {
+        return $this->internal->shouldReport($e);
     }
 
     /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
-     * @return \Symfony\Component\HttpFoundation\Response|\Illuminate\Http\Response
+     * @param \Symfony\Component\Console\Output\OutputInterface  $output
      */
-    public function render($request, Throwable $e)
+    public function renderForConsole($output, Throwable $e): void
+    {
+        $this->internal->renderForConsole($output, $e);
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function render($request, Throwable $e): Response|HttpResponse
     {
         $response = null;
         if (!self::$alreadyRenderErrorPage) {
@@ -62,6 +74,9 @@ class Handler extends ExceptionHandler
                 self::$alreadyRenderErrorPage = false;
             }
         }
-        return $response ?? parent::render($request, $e);
+        if ($response) {
+            return $response;
+        }
+        return $this->internal->render($request, $e);
     }
 }
