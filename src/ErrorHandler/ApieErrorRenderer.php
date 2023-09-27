@@ -5,6 +5,7 @@ namespace Apie\LaravelApie\ErrorHandler;
 use Apie\Common\ContextConstants;
 use Apie\Common\ErrorHandler\ApiErrorRenderer as CommonApiErrorRenderer;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
+use Apie\HtmlBuilders\ErrorHandler\StacktraceRenderer;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -45,5 +46,11 @@ class ApieErrorRenderer
             return new Response("Internal error", 500);
         }
         return $this->cmsErrorRenderer->createCmsResponse($request, $error);
+    }
+
+    public static function renderException(Throwable $throwable): string
+    {
+        $renderer = new StacktraceRenderer($throwable);
+        return (string) $renderer;
     }
 }
