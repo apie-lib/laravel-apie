@@ -82,6 +82,9 @@ class ApieServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
         TagMap::registerEvents($this->app);
+        if ($this->app->runningInConsole()) {
+            $this->commands(TagMap::getServiceIdsWithTag($this->app, 'console.command'));
+        }
     }
 
     public function register()
