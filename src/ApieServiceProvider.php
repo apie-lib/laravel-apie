@@ -5,6 +5,7 @@ use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
+use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;
 use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
@@ -27,6 +28,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Console\Application;
 
 class ApieServiceProvider extends ServiceProvider
 {
@@ -84,6 +86,9 @@ class ApieServiceProvider extends ServiceProvider
         TagMap::registerEvents($this->app);
         if ($this->app->runningInConsole()) {
             $this->commands(TagMap::getServiceIdsWithTag($this->app, 'console.command'));
+            /** @var CommonConsoleCommandFactory $factory */
+            $factory = $this->app->get('apie.console.factory');
+            $this->commands(iterator_to_array($factory->create($this->app->get(Application::class))));
         }
     }
 
