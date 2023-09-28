@@ -11,6 +11,7 @@ use Apie\Core\CoreServiceProvider;
 use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\Faker\FakerServiceProvider;
+use Apie\HtmlBuilders\Configuration\ApplicationConfiguration;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
@@ -157,6 +158,15 @@ class ApieServiceProvider extends ServiceProvider
                     }
                 }
             }
+        }
+
+        // workaround against apie/service-provider-generator not parsing parameters in arrays
+        if (config('apie.enable_cms')) {
+            $this->app->singleton(ApplicationConfiguration::class, function () {
+                return new ApplicationConfiguration([
+                    'base_url' => config('apie.cms.base_url'),
+                ]);
+            });
         }
     }
 }
