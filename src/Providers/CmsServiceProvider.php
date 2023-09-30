@@ -2,6 +2,7 @@
 namespace Apie\LaravelApie\Providers;
 
 use Apie\Cms\CmsServiceProvider as CmsCmsServiceProvider;
+use Apie\HtmlBuilders\Configuration\ApplicationConfiguration;
 use Apie\LaravelApie\Wrappers\Cms\DashboardContents;
 
 class CmsServiceProvider extends CmsCmsServiceProvider
@@ -19,6 +20,13 @@ class CmsServiceProvider extends CmsCmsServiceProvider
                 config('apie.cms.dashboard_template'),
                 []
             );
+        });
+
+        // workaround against apie/service-provider-generator not parsing parameters in arrays
+        $this->app->singleton(ApplicationConfiguration::class, function () {
+            return new ApplicationConfiguration([
+                'base_url' => config('apie.cms.base_url'),
+            ]);
         });
     }
 }

@@ -8,12 +8,13 @@ use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;
+use Apie\Core\Session\CsrfTokenProvider;
 use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\Faker\FakerServiceProvider;
-use Apie\HtmlBuilders\Configuration\ApplicationConfiguration;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
+use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
 use Apie\LaravelApie\ErrorHandler\Handler;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
@@ -160,13 +161,8 @@ class ApieServiceProvider extends ServiceProvider
             }
         }
 
-        // workaround against apie/service-provider-generator not parsing parameters in arrays
-        if (config('apie.enable_cms')) {
-            $this->app->singleton(ApplicationConfiguration::class, function () {
-                return new ApplicationConfiguration([
-                    'base_url' => config('apie.cms.base_url'),
-                ]);
-            });
-        }
+        $this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
+        TagMap::register($this->app, CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
+        $this->app->tag(CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
     }
 }
