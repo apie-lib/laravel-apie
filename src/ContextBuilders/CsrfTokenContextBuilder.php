@@ -34,7 +34,7 @@ class CsrfTokenContextBuilder implements ContextBuilderInterface, CsrfTokenProvi
         }
 
 
-        if (null === csrf_token()) {
+        if (!csrf_token()) {
             return $context->withContext(CsrfTokenProvider::class, new FakeTokenProvider());
         }
         
