@@ -17,6 +17,16 @@ class CsrfTokenContextBuilder implements ContextBuilderInterface, CsrfTokenProvi
     /** @var array<string, bool> */
     private array $alreadyChecked = [];
 
+    private function getCsrfToken(): ?string
+    {
+        $session = app('session');
+
+        if (isset($session)) {
+            return $session->token();
+        }
+        return null;
+    }
+
     public function process(ApieContext $context): ApieContext
     {
         $this->tokenName = $context->hasContext(ContextConstants::RESOURCE_NAME)
@@ -34,7 +44,7 @@ class CsrfTokenContextBuilder implements ContextBuilderInterface, CsrfTokenProvi
         }
 
 
-        if (!csrf_token()) {
+        if (!$this->getCsrfToken()) {
             return $context->withContext(CsrfTokenProvider::class, new FakeTokenProvider());
         }
         
@@ -51,8 +61,13 @@ class CsrfTokenContextBuilder implements ContextBuilderInterface, CsrfTokenProvi
         if (!empty($this->alreadyChecked[$token])) {
             return;
         }
-        $request = request();
-        if (!hash_equals($request->session()->token(), $token)) {
+        $csrfToken = $this->getCsrfToken();
+        if (null === $csrfToken) {
+            $fakeProvider = new FakeTokenProvider;
+            $fakeProvider->validateToken($token);
+            return;
+        }
+        if (!hash_equals($csrfToken, $token)) {
             throw new InvalidCsrfTokenException();
         }
         $this->alreadyChecked[$token] = true;

@@ -41,7 +41,6 @@ class ApieRouteLoader
                     ];
                 /** @var \Illuminate\Routing\Route $route */
                 $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
-
                 $route->defaults += $defaults;
                 $route->wheres = $prefix->getRouteRequirements();
             }

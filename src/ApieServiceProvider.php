@@ -161,7 +161,7 @@ class ApieServiceProvider extends ServiceProvider
             }
         }
 
-        $this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
+        //$this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
         TagMap::register($this->app, CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
     }
