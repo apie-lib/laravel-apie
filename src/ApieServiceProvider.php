@@ -40,8 +40,8 @@ class ApieServiceProvider extends ServiceProvider
     private array $dependencies = [
         'enable_cms' => [
             CommonServiceProvider::class,
+            HtmlBuilderServiceProvider::class, // it's important that this loads before CmsServiceProvider!!!
             CmsServiceProvider::class,
-            HtmlBuilderServiceProvider::class,
             SerializerServiceProvider::class,
         ],
         'enable_cms_dropdown' => [
