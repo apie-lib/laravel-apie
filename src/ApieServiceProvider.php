@@ -3,6 +3,7 @@ namespace Apie\LaravelApie;
 
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
+use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
@@ -81,8 +82,30 @@ class ApieServiceProvider extends ServiceProvider
         ],
     ];
 
+    private function autoTagHashmapActions()
+    {
+        $boundedContextConfig = config('apie.bounded_contexts');
+        $factory = new BoundedContextHashmapFactory($boundedContextConfig);
+        $hashmap = $factory->create();
+        foreach ($hashmap as $boundedContext) {
+            foreach ($boundedContext->actions as $action) {
+                $class = $action->getDeclaringClass();
+                if (!$class->isInstantiable()) {
+                    continue;
+                }
+                $className = $class->name;
+                \Apie\ServiceProviderGenerator\TagMap::register(
+                    $this->app,
+                    $className,
+                    ['apie.context']
+                );
+            }
+        }
+    }
+
     public function boot(): void
     {
+        $this->autoTagHashmapActions();
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
         TagMap::registerEvents($this->app);
