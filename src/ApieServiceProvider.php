@@ -82,7 +82,7 @@ class ApieServiceProvider extends ServiceProvider
         ],
     ];
 
-    private function autoTagHashmapActions()
+    private function autoTagHashmapActions(): void
     {
         $boundedContextConfig = config('apie.bounded_contexts');
         $factory = new BoundedContextHashmapFactory($boundedContextConfig);
