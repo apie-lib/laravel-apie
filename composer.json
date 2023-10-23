@@ -31,7 +31,7 @@
     "apie/common": "self.version",
     "apie/core": "self.version",
     "apie/service-provider-generator": "0.11.1",
-    "laravel/laravel": "7.*|8.*|9.*|10.*",
+    "laravel/framework": "7.*|8.*|9.*|10.*",
     "symfony/cache": "^6.0",
     "symfony/psr-http-message-bridge": "2.*"
   },
