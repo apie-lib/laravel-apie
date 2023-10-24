@@ -16,6 +16,7 @@ use Apie\Faker\FakerServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
+use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
 use Apie\LaravelApie\ErrorHandler\Handler;
 use Apie\LaravelApie\Providers\CmsServiceProvider;
@@ -187,5 +188,7 @@ class ApieServiceProvider extends ServiceProvider
         //$this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
         TagMap::register($this->app, CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
+        TagMap::register($this->app, RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
+        $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
     }
 }
