@@ -12,7 +12,7 @@ class RegisterBoundedContextActionContextBuilder implements ContextBuilderInterf
         if (!$context->hasContext(BoundedContextHashmap::class)) {
             return $context;
         }
-        $hashmap = $context->getContext(BoundedContextHashmap::class)
+        $hashmap = $context->getContext(BoundedContextHashmap::class);
         foreach ($hashmap as $boundedContext) {
             foreach ($boundedContext->actions as $action) {
                 $className = $action->getDeclaringClass()->name;
