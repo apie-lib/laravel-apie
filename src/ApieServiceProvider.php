@@ -3,9 +3,9 @@ namespace Apie\LaravelApie;
 
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
-use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
+use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;

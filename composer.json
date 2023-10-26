@@ -35,6 +35,9 @@
     "symfony/cache": "^6.0",
     "symfony/psr-http-message-bridge": "2.*"
   },
+  "conflict": {
+    "laravel/framework": "^10.29"
+  },
   "require-dev": {
     "apie/rest-api": "self.version",
     "phpunit/phpunit": "^9.5",
