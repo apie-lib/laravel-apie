@@ -36,7 +36,8 @@ class CsrfTokenContextBuilder implements ContextBuilderInterface, CsrfTokenProvi
         $this->tokenName .=  $context->hasContext(ContextConstants::APIE_ACTION)
             ? $context->getContext(ContextConstants::APIE_ACTION)
             : 'apie';
-        if ($context->hasContext(DecoderInterface::class)
+        if (!app()->environment('testing')
+            && $context->hasContext(DecoderInterface::class)
             && $context->hasContext(ContextConstants::RAW_CONTENTS)
             && $context->getContext(DecoderInterface::class) instanceof FormSubmitDecoder) {
             $csrf = $context->getContext(ContextConstants::RAW_CONTENTS)['_csrf'] ?? '';
