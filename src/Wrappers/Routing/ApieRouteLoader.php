@@ -1,12 +1,14 @@
 <?php
 namespace Apie\LaravelApie\Wrappers\Routing;
 
+use Apie\Common\Enums\UrlPrefix;
 use Apie\Common\Interfaces\HasRouteDefinition;
 use Apie\Common\Interfaces\RouteDefinitionProviderInterface;
 use Apie\Common\RouteDefinitions\PossibleRoutePrefixProvider;
 use Apie\Core\BoundedContext\BoundedContextHashmap;
 use Apie\Core\Context\ApieContext;
 use Illuminate\Routing\RouteRegistrar;
+use Illuminate\Session\Middleware\StartSession;
 
 class ApieRouteLoader
 {
@@ -43,6 +45,11 @@ class ApieRouteLoader
                 $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
                 $route->defaults += $defaults;
                 $route->name('apie.' . $boundedContextId . '.' . $routeDefinition->getOperationId());
+                foreach ($routeDefinition->getUrlPrefixes() as $urlPrefix) {
+                    if ($urlPrefix === UrlPrefix::CMS) {
+                        $route->middleware([StartSession::class]);
+                    }
+                }
                 $route->wheres = $prefix->getRouteRequirements();
             }
         }
