@@ -7,6 +7,7 @@ use Apie\Core\ContextBuilders\ContextBuilderInterface;
 use Apie\Core\Enums\RequestMethod;
 use Apie\Core\ValueObjects\Utils;
 use Illuminate\Http\Request;
+use Illuminate\Session\SymfonySessionDecorator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -15,10 +16,9 @@ class SessionContextBuilder implements ContextBuilderInterface
     public function process(ApieContext $context): ApieContext
     {
         $request = request();
-        ;
         if ($request instanceof Request && $request->hasSession() && $context->hasContext(RequestMethod::class)) {
             $session =  $request->session();
-            $context = $context->withContext(SessionInterface::class, $session);
+            $context = $context->withContext(SessionInterface::class, new SymfonySessionDecorator($session));
             // TODO: move to its own context builder
             if ($context->getContext(RequestMethod::class) === RequestMethod::GET) {
                 if ($session->has('_filled_in') && $context->hasContext(ContextConstants::DISPLAY_FORM)) {

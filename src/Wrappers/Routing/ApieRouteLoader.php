@@ -7,6 +7,7 @@ use Apie\Common\Interfaces\RouteDefinitionProviderInterface;
 use Apie\Common\RouteDefinitions\PossibleRoutePrefixProvider;
 use Apie\Core\BoundedContext\BoundedContextHashmap;
 use Apie\Core\Context\ApieContext;
+use Apie\LaravelApie\Wrappers\Security\VerifyApieUser;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Session\Middleware\StartSession;
 
@@ -47,7 +48,9 @@ class ApieRouteLoader
                 $route->name('apie.' . $boundedContextId . '.' . $routeDefinition->getOperationId());
                 foreach ($routeDefinition->getUrlPrefixes() as $urlPrefix) {
                     if ($urlPrefix === UrlPrefix::CMS) {
-                        $route->middleware([StartSession::class]);
+                        $route->middleware([StartSession::class, VerifyApieUser::class]);
+                    } else {
+                        $route->middleware([VerifyApieUser::class]);
                     }
                 }
                 $route->wheres = $prefix->getRouteRequirements();
