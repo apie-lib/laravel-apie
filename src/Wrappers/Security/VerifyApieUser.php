@@ -8,16 +8,17 @@ use Apie\Core\Actions\ActionResponse;
 use Apie\Core\Actions\ActionResponseStatus;
 use Apie\Core\Entities\EntityInterface;
 use Apie\Core\ValueObjects\Utils;
-use Apie\LaravelApie\Wrappers\Security\ApieUserProvider;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class VerifyApieUser extends FormCommitController
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $psrRequest = app(ServerRequestInterface::class);
         if (!$this->supports($psrRequest)) {
@@ -28,7 +29,7 @@ class VerifyApieUser extends FormCommitController
         return $responseFactory->createResponse($psrResponse);
     }
 
-    private function supports(ServerRequestInterface $request): ?bool
+    private function supports(ServerRequestInterface $request): bool
     {
         return $request->getAttribute('_is_apie', false)
             && $request->getAttribute(ContextConstants::OPERATION_ID)
