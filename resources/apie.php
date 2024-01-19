@@ -17,10 +17,12 @@ return [
         'error_template' => 'apie::error',
         'asset_folders' => [
             // storage_path('overrides')
-        ]
+        ],
+        'laravel_middleware' => [],
     ],
     'rest_api' => [
         'base_url' => '/api',
+        'laravel_middleware' => [],
     ],
     'datalayers' => [
         'default_datalayer' => RequestAwareInMemoryDatalayer::class,

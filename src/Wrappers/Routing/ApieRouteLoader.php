@@ -7,6 +7,7 @@ use Apie\Common\Interfaces\RouteDefinitionProviderInterface;
 use Apie\Common\RouteDefinitions\PossibleRoutePrefixProvider;
 use Apie\Core\BoundedContext\BoundedContextHashmap;
 use Apie\Core\Context\ApieContext;
+use Apie\Core\ValueObjects\Utils;
 use Apie\LaravelApie\Wrappers\Security\VerifyApieUser;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Session\Middleware\StartSession;
@@ -29,6 +30,8 @@ class ApieRouteLoader
         }
         $this->loaded = true;
         $apieContext = new ApieContext([]);
+        $cmsMiddleware = Utils::toArray(config('apie.cms.laravel_middleware') ?? []);
+        $apiMiddleware = Utils::toArray(config('apie.rest_api.laravel_middleware') ?? []);
         foreach ($this->boundedContextHashmap as $boundedContextId => $boundedContext) {
             foreach ($this->routeProvider->getActionsForBoundedContext($boundedContext, $apieContext) as $routeDefinition) {
                 /** @var HasRouteDefinition $routeDefinition */
@@ -48,9 +51,9 @@ class ApieRouteLoader
                 $route->name('apie.' . $boundedContextId . '.' . $routeDefinition->getOperationId());
                 foreach ($routeDefinition->getUrlPrefixes() as $urlPrefix) {
                     if ($urlPrefix === UrlPrefix::CMS) {
-                        $route->middleware([StartSession::class, VerifyApieUser::class]);
+                        $route->middleware([StartSession::class, VerifyApieUser::class, ...$cmsMiddleware]);
                     } else {
-                        $route->middleware([VerifyApieUser::class]);
+                        $route->middleware([VerifyApieUser::class, ...$apiMiddleware]);
                     }
                 }
                 $route->wheres = $prefix->getRouteRequirements();
