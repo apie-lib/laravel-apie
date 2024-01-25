@@ -53,7 +53,7 @@ class ApieRouteLoader
                     if ($urlPrefix === UrlPrefix::CMS) {
                         $route->middleware([StartSession::class, VerifyApieUser::class, ...$cmsMiddleware]);
                     } else {
-                        $route->middleware([VerifyApieUser::class, ...$apiMiddleware]);
+                        $route->middleware([StartSession::class, VerifyApieUser::class, ...$apiMiddleware]);
                     }
                 }
                 $route->wheres = $prefix->getRouteRequirements();

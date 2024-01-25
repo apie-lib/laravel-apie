@@ -24,9 +24,8 @@ class VerifyApieUser extends FormCommitController
         if (!$this->supports($psrRequest)) {
             return $next($request);
         }
-        $psrResponse = $this->__invoke($psrRequest);
-        $responseFactory = new HttpFoundationFactory();
-        return $responseFactory->createResponse($psrResponse);
+        $this->__invoke($psrRequest);
+        return $next($request);
     }
 
     private function supports(ServerRequestInterface $request): bool
