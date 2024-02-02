@@ -24,6 +24,7 @@ use Apie\LaravelApie\Providers\CmsServiceProvider;
 use Apie\LaravelApie\Providers\SecurityServiceProvider;
 use Apie\LaravelApie\Wrappers\Cms\DashboardContentFactory;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
+use Apie\Maker\MakerServiceProvider;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
@@ -81,6 +82,9 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_faker' => [
             FakerServiceProvider::class,
+        ],
+        'enable_maker' => [
+            MakerServiceProvider::class,
         ],
     ];
 

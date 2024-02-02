@@ -5,9 +5,10 @@ use Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider;
 use Apie\CmsApiDropdownOption\RouteDefinitions\DropdownOptionsForExistingObjectRouteDefinition;
 use Apie\Common\Wrappers\RequestAwareInMemoryDatalayer;
 use Apie\Console\ConsoleCommandFactory;
-use Apie\DoctrineEntityConverter\EntityBuilder;
+use Apie\DoctrineEntityConverter\OrmBuilder;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayer;
 use Apie\Faker\ApieObjectFaker;
+use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
 
 return [
@@ -51,10 +52,11 @@ return [
     'enable_core' => true,
     'enable_cms' => class_exists(CmsRouteDefinitionProvider::class),
     'enable_cms_dropdown' => class_exists(DropdownOptionsForExistingObjectRouteDefinition::class),
-    'enable_doctrine_entity_converter' => class_exists(EntityBuilder::class),
+    'enable_doctrine_entity_converter' => class_exists(OrmBuilder::class),
     'enable_doctrine_entity_datalayer' => class_exists(DoctrineEntityDatalayer::class),
     /* 'enable_doctrine_bundle_connection'  symfony only*/
     'enable_faker' => class_exists(ApieObjectFaker::class),
+    'enable_maker' => class_exists(Utils::class),
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_security' => true,
