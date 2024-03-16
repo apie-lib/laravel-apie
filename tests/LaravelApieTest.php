@@ -32,6 +32,7 @@ final class LaravelApieTest extends TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function it_can_register_apie_as_a_service()
     {
@@ -40,12 +41,13 @@ final class LaravelApieTest extends TestCase
 
     /**
      * @test
+     * @runInSeparateProcess
      */
     public function it_can_view_swagger_ui()
     {
         $response = $this->get('/api/default/openapi.yaml');
         $response->assertOk();
         // TODO figure out
-        //$response->assertSeeText('/api/default/TestEntity');
+        // $response->assertSeeText('/api/default/TestEntity');
     }
 }
