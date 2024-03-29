@@ -116,14 +116,23 @@ class ApieServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
         TagMap::registerEvents($this->app);
         if ($this->app->runningInConsole()) {
-            $this->commands(TagMap::getServiceIdsWithTag($this->app, 'console.command'));
+            $commands = [];
+            // for some reason these are not called in integration tests without re-registering them
+            foreach (TagMap::getServiceIdsWithTag($this->app, 'console.command') as $taggedCommand) {
+                $serviceId = 'apie.console.tagged.' . $taggedCommand;
+                $this->app->singleton($serviceId, function () use ($taggedCommand) {
+                    return $this->app->get($taggedCommand);
+                });
+                $commands[] = $serviceId;
+            }
             /** @var CommonConsoleCommandFactory $factory */
             $factory = $this->app->get('apie.console.factory');
             foreach ($factory->create($this->app->get(Application::class)) as $command) {
                 $serviceId = 'apie.console.registered.' . $command->getName();
                 $this->app->instance($serviceId, $command);
-                $this->commands($serviceId);
+                $commands[] = $serviceId;
             }
+            $this->commands($commands);
         }
     }
 
