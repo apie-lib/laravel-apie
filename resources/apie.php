@@ -1,6 +1,7 @@
 <?php
 // apie config file.
 
+use Apie\ApieCommonPlugin\ApieCommonPlugin;
 use Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider;
 use Apie\CmsApiDropdownOption\RouteDefinitions\DropdownOptionsForExistingObjectRouteDefinition;
 use Apie\Common\Wrappers\RequestAwareInMemoryDatalayer;
@@ -50,6 +51,7 @@ return [
         ]
     ],
     'enable_core' => true,
+    'enable_common_plugin' => class_exists(ApieCommonPlugin::class),
     'enable_cms' => class_exists(CmsRouteDefinitionProvider::class),
     'enable_cms_dropdown' => class_exists(DropdownOptionsForExistingObjectRouteDefinition::class),
     'enable_doctrine_entity_converter' => class_exists(OrmBuilder::class),

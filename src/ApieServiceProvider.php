@@ -1,6 +1,7 @@
 <?php
 namespace Apie\LaravelApie;
 
+use Apie\ApieCommonPlugin\ApieCommonPluginServiceProvider;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\Interfaces\BoundedContextSelection;
@@ -42,6 +43,9 @@ class ApieServiceProvider extends ServiceProvider
      * @var array<string, array<int, class-string<ServiceProvider>>> $dependencies
      */
     private array $dependencies = [
+        'enable_common_plugin' => [
+            ApieCommonPluginServiceProvider::class,
+        ],
         'enable_cms' => [
             CommonServiceProvider::class,
             HtmlBuilderServiceProvider::class, // it's important that this loads before CmsServiceProvider!!!
