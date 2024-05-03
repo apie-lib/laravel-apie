@@ -11,6 +11,7 @@ use Apie\Core\Actions\ActionResponseStatus;
 use Apie\Core\Entities\EntityInterface;
 use Apie\Core\ValueObjects\Utils;
 use Closure;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,20 +24,27 @@ class VerifyApieUser extends FormCommitController
     {
         $psrRequest = app(ServerRequestInterface::class);
         if ($request->cookies->has(AddAuthenticationCookie::COOKIE_NAME)) {
-            $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
-            $textEncrypter = $context->getContext(TextEncrypter::class);
-            assert($textEncrypter instanceof TextEncrypter);
-            $data = explode(
-                '/',
-                $textEncrypter->decrypt($request->cookies->get(AddAuthenticationCookie::COOKIE_NAME)),
-                2
-            );
-            $userIdentifier = $data[0] . '/'
-                . $context->getContext(ContextConstants::BOUNDED_CONTEXT_ID)
-                . '/'
-                . $data[1];
-            $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
-            Auth::login($user);
+            try {
+                $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
+                $textEncrypter = $context->getContext(TextEncrypter::class);
+                assert($textEncrypter instanceof TextEncrypter);
+                $data = explode(
+                    '/',
+                    $textEncrypter->decrypt($request->cookies->get(AddAuthenticationCookie::COOKIE_NAME)),
+                    2
+                );
+                $userIdentifier = $data[0] . '/'
+                    . $context->getContext(ContextConstants::BOUNDED_CONTEXT_ID)
+                    . '/'
+                    . $data[1];
+                $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
+                Auth::login($user);
+            } catch (Exception $error) {
+                logger(
+                    'Authentication cookie ignored: ' . $error->getMessage(),
+                    ['error' => $error]
+                );
+            }
         }
         
         if (!$this->supports($psrRequest)) {
