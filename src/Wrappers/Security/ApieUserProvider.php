@@ -2,7 +2,7 @@
 namespace Apie\LaravelApie\Wrappers\Security;
 
 use Apie\Common\ApieFacade;
-use Apie\Common\Wrappers\ApieUserDecoratorIdentifier;
+use Apie\Common\ValueObjects\DecryptedAuthenticatedUser;
 use Apie\Core\Entities\EntityInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -18,9 +18,9 @@ class ApieUserProvider implements UserProvider
      */
     public function retrieveById($identifier): ApieUserDecorator
     {
-        $identifier = new ApieUserDecoratorIdentifier($identifier);
+        $identifier = new DecryptedAuthenticatedUser($identifier);
         $boundedContextId = $identifier->getBoundedContextId();
-        $entity = $this->apieFacade->find($identifier->getIdentifier(), $boundedContextId);
+        $entity = $this->apieFacade->find($identifier->getId(), $boundedContextId);
         return new ApieUserDecorator($identifier, $entity);
     }
 

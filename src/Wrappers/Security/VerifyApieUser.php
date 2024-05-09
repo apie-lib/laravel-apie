@@ -4,12 +4,11 @@ namespace Apie\LaravelApie\Wrappers\Security;
 
 use Apie\Cms\Controllers\FormCommitController;
 use Apie\Common\ContextConstants;
-use Apie\Common\Events\AddAuthenticationCookie;
-use Apie\Common\Wrappers\TextEncrypter;
+use Apie\Common\ValueObjects\DecryptedAuthenticatedUser;
 use Apie\Core\Actions\ActionResponse;
 use Apie\Core\Actions\ActionResponseStatus;
+use Apie\Core\BoundedContext\BoundedContextId;
 use Apie\Core\Entities\EntityInterface;
-use Apie\Core\ValueObjects\Utils;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -23,28 +22,20 @@ class VerifyApieUser extends FormCommitController
     public function handle(Request $request, Closure $next): Response
     {
         $psrRequest = app(ServerRequestInterface::class);
-        if ($request->cookies->has(AddAuthenticationCookie::COOKIE_NAME)) {
-            try {
-                $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
-                $textEncrypter = $context->getContext(TextEncrypter::class);
-                assert($textEncrypter instanceof TextEncrypter);
-                $data = explode(
-                    '/',
-                    $textEncrypter->decrypt($request->cookies->get(AddAuthenticationCookie::COOKIE_NAME)),
-                    2
-                );
-                $userIdentifier = $data[0] . '/'
-                    . $context->getContext(ContextConstants::BOUNDED_CONTEXT_ID)
-                    . '/'
-                    . $data[1];
+        try {
+            $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
+            $decryptedAuthenticatedUser = $context->getContext(DecryptedAuthenticatedUser::class, true);
+            if ($context->hasContext(ContextConstants::AUTHENTICATED_USER)
+                && $decryptedAuthenticatedUser instanceof DecryptedAuthenticatedUser) {
+                $userIdentifier = $decryptedAuthenticatedUser->toNative();
                 $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
                 Auth::login($user);
-            } catch (Exception $error) {
-                logger(
-                    'Authentication cookie ignored: ' . $error->getMessage(),
-                    ['error' => $error]
-                );
             }
+        } catch(Exception $error) {
+            logger(
+                'Error decrypting auth cookie: ' . $error->getMessage(),
+                ['error' => $error]
+            );
         }
         
         if (!$this->supports($psrRequest)) {
@@ -65,11 +56,12 @@ class VerifyApieUser extends FormCommitController
     protected function createResponse(ServerRequestInterface $psrRequest, ActionResponse $actionResponse): ResponseInterface
     {
         if ($actionResponse->status === ActionResponseStatus::SUCCESS && $actionResponse->result instanceof EntityInterface) {
-            $userIdentifier = get_class($actionResponse->result)
-                . '/'
-                . $psrRequest->getAttribute(ContextConstants::BOUNDED_CONTEXT_ID)
-                . '/'
-                . Utils::toString($actionResponse->result->getId());
+            $decryptedUserId = DecryptedAuthenticatedUser::createFromEntity(
+                $actionResponse->result,
+                new BoundedContextId($psrRequest->getAttribute(ContextConstants::BOUNDED_CONTEXT_ID)),
+                time() + 3600
+            );
+            $userIdentifier = $decryptedUserId->toNative();
             $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
             Auth::login($user);
         }
