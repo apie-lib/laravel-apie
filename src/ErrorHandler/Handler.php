@@ -3,6 +3,7 @@
 namespace Apie\LaravelApie\ErrorHandler;
 
 use Apie\Common\IntegrationTestLogger;
+use Apie\Core\Exceptions\ApieException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionsHandler;
@@ -62,7 +63,7 @@ class Handler extends ExceptionsHandler
             try {
                 /** @var ApieErrorRenderer $apieErrorHandler */
                 $apieErrorHandler = resolve(ApieErrorRenderer::class);
-                if ($apieErrorHandler->isApieRequest($request)) {
+                if ($apieErrorHandler->isApieRequest($request) || $e instanceof ApieException) {
                     if ($apieErrorHandler->canCreateCmsResponse($request)) {
                         $response = $apieErrorHandler->createCmsResponse($request, $e);
                     } else {

@@ -10,7 +10,6 @@ use Apie\Core\Actions\ActionResponseStatus;
 use Apie\Core\BoundedContext\BoundedContextId;
 use Apie\Core\Entities\EntityInterface;
 use Closure;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,20 +21,13 @@ class VerifyApieUser extends FormCommitController
     public function handle(Request $request, Closure $next): Response
     {
         $psrRequest = app(ServerRequestInterface::class);
-        try {
-            $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
-            $decryptedAuthenticatedUser = $context->getContext(DecryptedAuthenticatedUser::class, true);
-            if ($context->hasContext(ContextConstants::AUTHENTICATED_USER)
-                && $decryptedAuthenticatedUser instanceof DecryptedAuthenticatedUser) {
-                $userIdentifier = $decryptedAuthenticatedUser->toNative();
-                $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
-                Auth::login($user);
-            }
-        } catch(Exception $error) {
-            logger(
-                'Error decrypting auth cookie: ' . $error->getMessage(),
-                ['error' => $error]
-            );
+        $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
+        $decryptedAuthenticatedUser = $context->getContext(DecryptedAuthenticatedUser::class, false);
+        if ($context->hasContext(ContextConstants::AUTHENTICATED_USER)
+            && $decryptedAuthenticatedUser instanceof DecryptedAuthenticatedUser) {
+            $userIdentifier = $decryptedAuthenticatedUser->toNative();
+            $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
+            Auth::login($user);
         }
         
         if (!$this->supports($psrRequest)) {
