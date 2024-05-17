@@ -1,9 +1,9 @@
 <?php
 namespace Apie\LaravelApie\ContextBuilders;
 
-use Apie\Common\ContextConstants;
 use Apie\Core\Context\ApieContext;
 use Apie\Core\ContextBuilders\ContextBuilderInterface;
+use Apie\Core\ContextConstants;
 use Apie\Core\Exceptions\InvalidCsrfTokenException;
 use Apie\Core\Session\CsrfTokenProvider;
 use Apie\Core\Session\FakeTokenProvider;

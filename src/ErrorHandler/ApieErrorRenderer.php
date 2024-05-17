@@ -2,8 +2,8 @@
 
 namespace Apie\LaravelApie\ErrorHandler;
 
-use Apie\Common\ContextConstants;
 use Apie\Common\ErrorHandler\ApiErrorRenderer as CommonApiErrorRenderer;
+use Apie\Core\ContextConstants;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\ErrorHandler\StacktraceRenderer;
 use Illuminate\Http\Request;
