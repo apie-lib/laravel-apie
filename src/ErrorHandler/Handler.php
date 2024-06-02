@@ -69,7 +69,6 @@ class Handler extends ExceptionsHandler
                     } else {
                         $response = $apieErrorHandler->createApiResponse($e);
                     }
-
                 }
             } finally {
                 self::$alreadyRenderErrorPage = false;
