@@ -31,17 +31,14 @@
     "apie/common": "self.version",
     "apie/core": "self.version",
     "apie/service-provider-generator": "0.11.2",
-    "laravel/framework": "7.*|8.*|9.*|10.*",
+    "laravel/framework": "^10.48.12",
     "symfony/cache": "^6.4",
-    "symfony/psr-http-message-bridge": "2.*"
-  },
-  "conflict": {
-    "laravel/framework": "^10.29"
+    "symfony/psr-http-message-bridge": "^2.3.1"
   },
   "require-dev": {
     "apie/rest-api": "self.version",
-    "phpunit/phpunit": "^9.5",
-    "phpspec/prophecy-phpunit": "^2.0"
+    "phpunit/phpunit": "^9.6.19",
+    "phpspec/prophecy-phpunit": "^2.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
