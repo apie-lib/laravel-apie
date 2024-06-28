@@ -42,6 +42,7 @@ return [
         'run_migrations' => false,
         'connection_params' => [],
     ],
+    'storage' => null,
     'bounded_contexts' => [
         'default' => [
             'entities_folder' => app_path('Apie/Entities'),
