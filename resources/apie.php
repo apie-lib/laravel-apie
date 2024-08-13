@@ -43,6 +43,10 @@ return [
         'connection_params' => [],
     ],
     'storage' => null,
+    'maker' => [
+        'target_path' => false,
+        'target_namespace' => 'App\Apie',
+    ],
     'bounded_contexts' => [
         'default' => [
             'entities_folder' => app_path('Apie/Entities'),
