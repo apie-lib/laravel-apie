@@ -28,6 +28,11 @@ final class LaravelApieTest extends TestCase
                     ],
                 ]
             );
+            $config->set(
+                'apie.scan_bounded_contexts',
+                [
+                ]
+            );
         });
     }
 

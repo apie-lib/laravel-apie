@@ -95,7 +95,8 @@ class ApieServiceProvider extends ServiceProvider
     private function autoTagHashmapActions(): void
     {
         $boundedContextConfig = config('apie.bounded_contexts');
-        $factory = new BoundedContextHashmapFactory($boundedContextConfig);
+        $scanBoundedContextConfig = config('apie.scan_bounded_contexts');
+        $factory = new BoundedContextHashmapFactory($boundedContextConfig ?? [], $scanBoundedContextConfig ?? []);
         $hashmap = $factory->create();
         foreach ($hashmap as $boundedContext) {
             foreach ($boundedContext->actions as $action) {
@@ -104,7 +105,7 @@ class ApieServiceProvider extends ServiceProvider
                     continue;
                 }
                 $className = $class->name;
-                \Apie\ServiceProviderGenerator\TagMap::register(
+                TagMap::register(
                     $this->app,
                     $className,
                     ['apie.context']
