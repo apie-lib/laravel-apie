@@ -8,6 +8,12 @@ use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
+use Apie\LaravelApie\Config\LaravelConfiguration;
+use Illuminate\Config\Repository;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Definition\Processor;
+
+;
 use Apie\Console\ConsoleServiceProvider;
 use Apie\Core\CoreServiceProvider;
 use Apie\Core\Session\CsrfTokenProvider;
@@ -35,6 +41,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\Console\Application;
 
 class ApieServiceProvider extends ServiceProvider
@@ -214,5 +221,40 @@ class ApieServiceProvider extends ServiceProvider
 
         TagMap::register($this->app, RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
+        $this->app->extend('config', function (Repository $config) {
+            $this->sanitizeConfig($config);
+            return $config;
+        });
+    }
+
+    private function sanitizeConfig(Repository $config): void
+    {
+        $rawConfig = $config->get('apie');
+        $path = storage_path('framework/cache/apie-config' . md5(json_encode($rawConfig)) . '.php');
+        $resources = [
+            new ReflectionClassResource(new \ReflectionClass(LaravelConfiguration::class)),
+            new ReflectionClassResource(new \ReflectionClass(static::class)),
+        ];
+        $configCache = new ConfigCache($path, true);
+        if ($configCache->isFresh()) {
+            $processedConfig = require $path;
+        } else {
+            $configuration = new LaravelConfiguration();
+
+            $processor = new Processor();
+
+            $processedConfig = $processor->processConfiguration($configuration, ['apie' => $rawConfig]);
+
+            if (!isset($processedConfig['scan_bounded_contexts'])) {
+                $processedConfig['scan_bounded_contexts'] = [];
+            }
+            if (empty($processedConfig['storage'])) {
+                $processedConfig['storage'] = null;
+            }
+            $code = '<?php' . PHP_EOL . 'return ' . var_export($processedConfig, true) . ';';
+            $configCache->write($code, $resources);
+        }
+
+        $config->set('apie', $processedConfig);
     }
 }

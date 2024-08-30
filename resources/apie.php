@@ -66,5 +66,4 @@ return [
     'enable_maker' => class_exists(Utils::class),
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
-    'enable_security' => true,
 ];

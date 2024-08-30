@@ -16,7 +16,7 @@ final class LaravelApieTest extends TestCase
     protected function defineEnvironment($app): void
     {
         tap($app->make('config'), function (Repository $config) {
-            $config->set('apie.encrypted_key', 'test');
+            $config->set('apie.encryption_key', 'test');
             $config->set(
                 'apie.bounded_contexts',
                 [
