@@ -16,11 +16,11 @@ class SessionContextBuilder implements ContextBuilderInterface
     public function process(ApieContext $context): ApieContext
     {
         $request = request();
-        if ($request instanceof Request && $request->hasSession() && $context->hasContext(RequestMethod::class)) {
+        if ($request instanceof Request && $request->hasSession()) {
             $session =  $request->session();
             $context = $context->withContext(SessionInterface::class, new SymfonySessionDecorator($session));
             // TODO: move to its own context builder
-            if ($context->getContext(RequestMethod::class) === RequestMethod::GET) {
+            if ($context->getContext(RequestMethod::class, false) === RequestMethod::GET) {
                 if ($session->has('_filled_in') && $context->hasContext(ContextConstants::DISPLAY_FORM)) {
                     $context = $context->withContext(
                         ContextConstants::RAW_CONTENTS,
