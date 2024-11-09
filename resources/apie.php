@@ -11,6 +11,7 @@ use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayer;
 use Apie\Faker\ApieObjectFaker;
 use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
+use Apie\TwigTemplateLayoutRenderer\TwigRenderer;
 
 return [
     'cms' => [
@@ -66,4 +67,5 @@ return [
     'enable_maker' => class_exists(Utils::class),
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
+    'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
 ];
