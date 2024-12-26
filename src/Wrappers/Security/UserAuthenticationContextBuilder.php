@@ -9,6 +9,7 @@ class UserAuthenticationContextBuilder implements ContextBuilderInterface
 {
     public function process(ApieContext $context): ApieContext
     {
+        // @phpstan-ignore method.notFound
         $user = auth()->user();
         if ($user) {
             $context = $context->registerInstance($user);

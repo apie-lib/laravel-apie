@@ -40,7 +40,7 @@ class ApieUserProvider implements UserProvider
      * @param array<int|string, mixed> $credentials
      * @return ApieUserDecorator<EntityInterface>|null
      */
-    public function retrieveByCredentials(array $credentials): ?ApieUserDecorator
+    public function retrieveByCredentials(#[\SensitiveParameter] array $credentials): ?ApieUserDecorator
     {
         // TODO find the verifyAuthentication action...
         return null;
@@ -49,9 +49,20 @@ class ApieUserProvider implements UserProvider
     /**
      * @param array<int|string, mixed> $credentials
      */
-    public function validateCredentials(Authenticatable $user, array $credentials): bool
+    public function validateCredentials(Authenticatable $user, #[\SensitiveParameter] array $credentials): bool
     {
         // TODO find the verifyAuthentication action...
         return false;
+    }
+
+    /**
+     * @param array<int|string, mixed> $credentials
+     */
+    public function rehashPasswordIfRequired(
+        Authenticatable $user,
+        #[\SensitiveParameter] array $credentials,
+        bool $force = false
+    ): void {
+        // TODO find the verifyAuthentication action....
     }
 }

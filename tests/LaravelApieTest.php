@@ -36,24 +36,19 @@ final class LaravelApieTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function it_can_register_apie_as_a_service()
     {
         $this->assertInstanceOf(ApieFacade::class, resolve('apie'));
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function it_can_view_swagger_ui()
     {
         $response = $this->get('/api/default/openapi.yaml');
         $response->assertOk();
-        // TODO figure out
-        // $response->assertSeeText('/api/default/TestEntity');
+        $response->assertSeeText('TestEntity-post');
     }
 }

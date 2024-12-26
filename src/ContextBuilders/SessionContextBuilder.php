@@ -16,6 +16,7 @@ class SessionContextBuilder implements ContextBuilderInterface
     public function process(ApieContext $context): ApieContext
     {
         $request = request();
+        // @phpstan-ignore instanceof.alwaysTrue
         if ($request instanceof Request && $request->hasSession()) {
             $session =  $request->session();
             $context = $context->withContext(SessionInterface::class, new SymfonySessionDecorator($session));

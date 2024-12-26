@@ -36,6 +36,11 @@ final class ApieUserDecorator extends AbstractApieUserDecorator implements Authe
     {
     }
 
+    public function getAuthPasswordName(): string
+    {
+        return '';
+    }
+
     public function getRememberTokenName()
     {
         return '';
