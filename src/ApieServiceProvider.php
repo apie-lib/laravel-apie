@@ -8,6 +8,12 @@ use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
+use Apie\DoctrineEntityDatalayer\Commands\ApieUpdateIdfCommand;
+use Apie\DoctrineEntityDatalayer\EntityReindexer;
+use Apie\DoctrineEntityDatalayer\IndexStrategy\BackgroundIndexStrategy;
+use Apie\DoctrineEntityDatalayer\IndexStrategy\DirectIndexStrategy;
+use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexAfterResponseIsSentStrategy;
+use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexStrategyInterface;
 use Apie\LaravelApie\Config\LaravelConfiguration;
 use Illuminate\Config\Repository;
 use Symfony\Component\Config\ConfigCache;
@@ -127,8 +133,10 @@ class ApieServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
         TagMap::registerEvents($this->app);
+
         if ($this->app->runningInConsole()) {
             $commands = [];
+            $commands[] = ApieUpdateIdfCommand::class;
             // for some reason these are not called in integration tests without re-registering them
             foreach (TagMap::getServiceIdsWithTag($this->app, 'console.command') as $taggedCommand) {
                 $serviceId = 'apie.console.tagged.' . $taggedCommand;
@@ -183,6 +191,21 @@ class ApieServiceProvider extends ServiceProvider
                 return $psrRequest;
             }
         );
+
+        $this->app->bind(IndexStrategyInterface::class, function () {
+            $config = config();
+            if ($config->get('apie.enable_doctrine_entity_datalayer')) {
+                $type = $config->get('apie.doctrine.indexing.type', 'direct');
+                return match ($type) {
+                    'direct' => new DirectIndexStrategy($this->app->get(EntityReindexer::class)),
+                    'late' => new IndexAfterResponseIsSentStrategy($this->app->get(EntityReindexer::class)),
+                    'background' => new BackgroundIndexStrategy(),
+                    default => $this->app->get(config('apie.doctrine.indexing.service', DirectIndexStrategy::class)),
+                };
+            }
+
+            return new DirectIndexStrategy($this->app->get(EntityReindexer::class));
+        });
 
         $this->app->bind(ApieErrorRenderer::class, function () {
             return new ApieErrorRenderer(
