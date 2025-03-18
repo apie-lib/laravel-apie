@@ -1,10 +1,10 @@
 <?php
 namespace Apie\LaravelApie\Wrappers\Core;
 
-use Apie\Common\ContextConstants;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Core\BoundedContext\BoundedContext;
 use Apie\Core\BoundedContext\BoundedContextHashmap;
+use Apie\Core\ContextConstants;
 
 final class BoundedContextSelected implements BoundedContextSelection
 {

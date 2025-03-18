@@ -2,7 +2,7 @@
 namespace Apie\LaravelApie\Wrappers\Security;
 
 use Apie\Common\ApieFacade;
-use Apie\Common\Wrappers\ApieUserDecoratorIdentifier;
+use Apie\Common\ValueObjects\DecryptedAuthenticatedUser;
 use Apie\Core\Entities\EntityInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -18,9 +18,9 @@ class ApieUserProvider implements UserProvider
      */
     public function retrieveById($identifier): ApieUserDecorator
     {
-        $identifier = new ApieUserDecoratorIdentifier($identifier);
+        $identifier = new DecryptedAuthenticatedUser($identifier);
         $boundedContextId = $identifier->getBoundedContextId();
-        $entity = $this->apieFacade->find($identifier->getIdentifier(), $boundedContextId);
+        $entity = $this->apieFacade->find($identifier->getId(), $boundedContextId);
         return new ApieUserDecorator($identifier, $entity);
     }
 
@@ -40,7 +40,7 @@ class ApieUserProvider implements UserProvider
      * @param array<int|string, mixed> $credentials
      * @return ApieUserDecorator<EntityInterface>|null
      */
-    public function retrieveByCredentials(array $credentials): ?ApieUserDecorator
+    public function retrieveByCredentials(#[\SensitiveParameter] array $credentials): ?ApieUserDecorator
     {
         // TODO find the verifyAuthentication action...
         return null;
@@ -49,9 +49,20 @@ class ApieUserProvider implements UserProvider
     /**
      * @param array<int|string, mixed> $credentials
      */
-    public function validateCredentials(Authenticatable $user, array $credentials): bool
+    public function validateCredentials(Authenticatable $user, #[\SensitiveParameter] array $credentials): bool
     {
         // TODO find the verifyAuthentication action...
         return false;
+    }
+
+    /**
+     * @param array<int|string, mixed> $credentials
+     */
+    public function rehashPasswordIfRequired(
+        Authenticatable $user,
+        #[\SensitiveParameter] array $credentials,
+        bool $force = false
+    ): void {
+        // TODO find the verifyAuthentication action....
     }
 }

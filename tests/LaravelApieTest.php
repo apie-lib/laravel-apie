@@ -8,14 +8,15 @@ use Orchestra\Testbench\TestCase;
 
 final class LaravelApieTest extends TestCase
 {
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [ApieServiceProvider::class];
     }
 
-    protected function defineEnvironment($app)
+    protected function defineEnvironment($app): void
     {
         tap($app->make('config'), function (Repository $config) {
+            $config->set('apie.encryption_key', 'test');
             $config->set(
                 'apie.bounded_contexts',
                 [
@@ -27,25 +28,27 @@ final class LaravelApieTest extends TestCase
                     ],
                 ]
             );
+            $config->set(
+                'apie.scan_bounded_contexts',
+                [
+                ]
+            );
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function it_can_register_apie_as_a_service()
     {
         $this->assertInstanceOf(ApieFacade::class, resolve('apie'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function it_can_view_swagger_ui()
     {
         $response = $this->get('/api/default/openapi.yaml');
         $response->assertOk();
-        // TODO figure out
-        //$response->assertSeeText('/api/default/TestEntity');
+        $response->assertSeeText('TestEntity-post');
     }
 }

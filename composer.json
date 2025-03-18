@@ -19,18 +19,26 @@
       "Apie\\Tests\\LaravelApie\\": "tests/"
     }
   },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Apie\\LaravelApie\\ApieServiceProvider"
+        ]
+    }
+  },
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.3",
     "apie/common": "self.version",
     "apie/core": "self.version",
-    "apie/service-provider-generator": "0.10.4",
-    "laravel/laravel": "7.*|8.*|9.*|10.*",
-    "symfony/psr-http-message-bridge": "2.*"
+    "apie/service-provider-generator": "0.11.3",
+    "laravel/framework": "^11.0.0",
+    "symfony/cache": "^7.2",
+    "symfony/psr-http-message-bridge": "^7.2"
   },
   "require-dev": {
     "apie/rest-api": "self.version",
-    "phpunit/phpunit": "^9.5",
-    "phpspec/prophecy-phpunit": "^2.0"
+    "phpunit/phpunit": "^11.5.2",
+    "phpspec/prophecy-phpunit": "^2.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
