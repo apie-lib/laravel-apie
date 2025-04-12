@@ -49,6 +49,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\Console\Application;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ApieServiceProvider extends ServiceProvider
 {
@@ -109,7 +110,11 @@ class ApieServiceProvider extends ServiceProvider
     {
         $boundedContextConfig = config('apie.bounded_contexts');
         $scanBoundedContextConfig = config('apie.scan_bounded_contexts');
-        $factory = new BoundedContextHashmapFactory($boundedContextConfig ?? [], $scanBoundedContextConfig ?? []);
+        $factory = new BoundedContextHashmapFactory(
+            $boundedContextConfig ?? [],
+            $scanBoundedContextConfig ?? [],
+            new EventDispatcher(),
+        );
         $hashmap = $factory->create();
         foreach ($hashmap as $boundedContext) {
             foreach ($boundedContext->actions as $action) {
