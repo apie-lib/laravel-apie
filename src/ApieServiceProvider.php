@@ -8,26 +8,21 @@ use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\BoundedContextHashmapFactory;
 use Apie\Common\Wrappers\ConsoleCommandFactory as CommonConsoleCommandFactory;
+use Apie\Console\ConsoleServiceProvider;
+use Apie\Core\CoreServiceProvider;
+use Apie\Core\Session\CsrfTokenProvider;
+use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
 use Apie\DoctrineEntityDatalayer\Commands\ApieUpdateIdfCommand;
+use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\DoctrineEntityDatalayer\EntityReindexer;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\BackgroundIndexStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\DirectIndexStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexAfterResponseIsSentStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexStrategyInterface;
-use Apie\LaravelApie\Config\LaravelConfiguration;
-use Illuminate\Config\Repository;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\Config\Definition\Processor;
-
-;
-use Apie\Console\ConsoleServiceProvider;
-use Apie\Core\CoreServiceProvider;
-use Apie\Core\Session\CsrfTokenProvider;
-use Apie\DoctrineEntityConverter\DoctrineEntityConverterProvider;
-use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayerServiceProvider;
 use Apie\Faker\FakerServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
+use Apie\LaravelApie\Config\LaravelConfiguration;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
 use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ContextBuilders\SessionContextBuilder;
@@ -42,13 +37,17 @@ use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
 use Apie\ServiceProviderGenerator\TagMap;
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\Console\Application;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ApieServiceProvider extends ServiceProvider
 {
@@ -109,7 +108,11 @@ class ApieServiceProvider extends ServiceProvider
     {
         $boundedContextConfig = config('apie.bounded_contexts');
         $scanBoundedContextConfig = config('apie.scan_bounded_contexts');
-        $factory = new BoundedContextHashmapFactory($boundedContextConfig ?? [], $scanBoundedContextConfig ?? []);
+        $factory = new BoundedContextHashmapFactory(
+            $boundedContextConfig ?? [],
+            $scanBoundedContextConfig ?? [],
+            new EventDispatcher(),
+        );
         $hashmap = $factory->create();
         foreach ($hashmap as $boundedContext) {
             foreach ($boundedContext->actions as $action) {
