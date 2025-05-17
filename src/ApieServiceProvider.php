@@ -32,6 +32,7 @@ use Apie\LaravelApie\Providers\CmsServiceProvider;
 use Apie\LaravelApie\Providers\SecurityServiceProvider;
 use Apie\LaravelApie\Wrappers\Cms\DashboardContentFactory;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
+use Apie\LaravelApie\Wrappers\Queue\BackgroundProcessPersistListener;
 use Apie\Maker\MakerServiceProvider;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
@@ -251,6 +252,8 @@ class ApieServiceProvider extends ServiceProvider
             $this->sanitizeConfig($config);
             return $config;
         });
+
+        TagMap::register($this->app, BackgroundProcessPersistListener::class, ['kernel.event_subscriber']);
     }
 
     private function sanitizeConfig(Repository $config): void
