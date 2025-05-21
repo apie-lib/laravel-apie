@@ -4,6 +4,7 @@ namespace Apie\LaravelApie;
 use Apie\ApieCommonPlugin\ApieCommonPluginServiceProvider;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
+use Apie\Common\ContextBuilders\FrameworkContextBuilder;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\BoundedContextHashmapFactory;
@@ -163,6 +164,11 @@ class ApieServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../resources/apie.php', 'apie');
+
+        $this->app->bind(FrameworkContextBuilder::class, function () {
+            return new FrameworkContextBuilder('laravel');
+        });
+        TagMap::register($this->app, FrameworkContextBuilder::class, ['apie.core.context_builder']);
 
         // add PSR-14 support if needed:
         if (!$this->app->bound(EventDispatcherInterface::class)) {
