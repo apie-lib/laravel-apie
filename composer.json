@@ -33,6 +33,7 @@
     "apie/service-provider-generator": "0.11.3",
     "laravel/framework": "^11.0.0",
     "symfony/cache": "^7.2",
+    "symfony/lock": "^7.2",
     "symfony/psr-http-message-bridge": "^7.2"
   },
   "require-dev": {

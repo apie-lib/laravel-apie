@@ -50,6 +50,7 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Lock\LockFactory;
 
 class ApieServiceProvider extends ServiceProvider
 {
@@ -227,6 +228,11 @@ class ApieServiceProvider extends ServiceProvider
 
         $this->app->extend(ExceptionHandler::class, function (ExceptionHandler $service) {
             return new Handler($this->app, $service);
+        });
+
+        $this->app->bind(LockFactory::class, function () {
+            $config = config('apie.lock_store');
+            return new LockFactory($this->app->get($config));
         });
         
         $this->app->bind(DashboardContentFactoryInterface::class, DashboardContentFactory::class);

@@ -12,6 +12,7 @@ use Apie\Faker\ApieObjectFaker;
 use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
 use Apie\TwigTemplateLayoutRenderer\TwigRenderer;
+use Symfony\Component\Lock\Store\FlockStore;
 
 return [
     'cms' => [
@@ -23,6 +24,7 @@ return [
         ],
         'laravel_middleware' => [],
     ],
+    'lock_store' => FlockStore::class,
     'rest_api' => [
         'base_url' => '/api',
         'laravel_middleware' => [],
