@@ -2,6 +2,7 @@
 namespace Apie\LaravelApie\Wrappers\Routing;
 
 use Apie\Common\Enums\UrlPrefix;
+use Apie\Common\Interfaces\GlobalRouteDefinitionProviderInterface;
 use Apie\Common\Interfaces\HasRouteDefinition;
 use Apie\Common\Interfaces\RouteDefinitionProviderInterface;
 use Apie\Common\RouteDefinitions\PossibleRoutePrefixProvider;
@@ -32,6 +33,26 @@ class ApieRouteLoader
         $apieContext = new ApieContext([]);
         $cmsMiddleware = Utils::toArray(config('apie.cms.laravel_middleware') ?? []);
         $apiMiddleware = Utils::toArray(config('apie.rest_api.laravel_middleware') ?? []);
+        
+        if ($this->routeProvider instanceof GlobalRouteDefinitionProviderInterface) {
+            foreach ($this->routeProvider->getGlobalRoutes() as $routeDefinition) {
+                /** @var HasRouteDefinition $routeDefinition */
+
+                $path = ltrim($routeDefinition->getUrl(), '/');
+                $method = $routeDefinition->getMethod();
+                $defaults = $routeDefinition->getRouteAttributes()
+                    + [
+                        '_is_apie' => true,
+                        'uses' => $routeDefinition->getController(),
+                    ];
+                /** @var \Illuminate\Routing\Route $route */
+                $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
+                $route->defaults += $defaults;
+                $route->name('apie.global.' . $routeDefinition->getOperationId());
+                $route->middleware([StartSession::class, VerifyApieUser::class, ...$cmsMiddleware]);
+            }
+        }
+        
         foreach ($this->boundedContextHashmap as $boundedContextId => $boundedContext) {
             foreach ($this->routeProvider->getActionsForBoundedContext($boundedContext, $apieContext) as $routeDefinition) {
                 /** @var HasRouteDefinition $routeDefinition */

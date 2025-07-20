@@ -12,6 +12,7 @@ use Apie\Faker\ApieObjectFaker;
 use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
 use Apie\TwigTemplateLayoutRenderer\TwigRenderer;
+use Apie\TypescriptClientBuilder\RouteDefinitions\CodeRouteDefinitionProvider;
 use Symfony\Component\Lock\Store\FlockStore;
 
 return [
@@ -70,4 +71,5 @@ return [
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
+    'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
 ];

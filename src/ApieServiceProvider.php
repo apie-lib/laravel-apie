@@ -1,6 +1,7 @@
 <?php
 namespace Apie\LaravelApie;
 
+use Apie\AiInstructor\AiInstructorServiceProvider;
 use Apie\ApieCommonPlugin\ApieCommonPluginServiceProvider;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
@@ -39,6 +40,7 @@ use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
 use Apie\ServiceProviderGenerator\TagMap;
+use Apie\TypescriptClientBuilder\TypescriptClientBuilderServiceProvider;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -58,6 +60,9 @@ class ApieServiceProvider extends ServiceProvider
      * @var array<string, array<int, class-string<ServiceProvider>>> $dependencies
      */
     private array $dependencies = [
+        'enable_ai_instructor' => [
+            AiInstructorServiceProvider::class,
+        ],
         'enable_common_plugin' => [
             ApieCommonPluginServiceProvider::class,
         ],
@@ -104,6 +109,9 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_maker' => [
             MakerServiceProvider::class,
+        ],
+        'enable_typescript_client_builder' => [
+            TypescriptClientBuilderServiceProvider::class,
         ],
     ];
 
