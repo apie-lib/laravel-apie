@@ -270,6 +270,7 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->extend('config', function (Repository $config) {
             $this->sanitizeConfig($config);
+        
             return $config;
         });
 

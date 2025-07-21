@@ -59,6 +59,7 @@ return [
             'actions_namespace' => 'App\\Apie\\Actions\\',
         ]
     ],
+    'enable_ai_instructor' => class_exists(\Apie\AiInstructor\AiInstructor::class),
     'enable_core' => true,
     'enable_common_plugin' => class_exists(ApieCommonPlugin::class),
     'enable_cms' => class_exists(CmsRouteDefinitionProvider::class),
