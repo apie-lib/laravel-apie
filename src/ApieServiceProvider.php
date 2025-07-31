@@ -36,6 +36,7 @@ use Apie\LaravelApie\Wrappers\Cms\DashboardContentFactory;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
 use Apie\LaravelApie\Wrappers\Queue\BackgroundProcessPersistListener;
 use Apie\Maker\MakerServiceProvider;
+use Apie\McpServer\McpServerServiceProvider;
 use Apie\RestApi\RestApiServiceProvider;
 use Apie\SchemaGenerator\SchemaGeneratorServiceProvider;
 use Apie\Serializer\SerializerServiceProvider;
@@ -109,6 +110,11 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_maker' => [
             MakerServiceProvider::class,
+        ],
+        'enable_mcp_server' => [
+            CommonServiceProvider::class,
+            SerializerServiceProvider::class,
+            McpServerServiceProvider::class,
         ],
         'enable_typescript_client_builder' => [
             TypescriptClientBuilderServiceProvider::class,
