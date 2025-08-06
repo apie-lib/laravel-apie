@@ -253,8 +253,9 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->bind(BoundedContextSelection::class, BoundedContextSelected::class);
 
         $alreadyRegistered = [];
+        $parsedConfig = $this->parseConfig(config('apie'));
         foreach ($this->dependencies as $configKey => $dependencies) {
-            if (config('apie.' . $configKey, false)) {
+            if ($parsedConfig[$configKey] ?? false) {
                 foreach ($dependencies as $dependency) {
                     if (!isset($alreadyRegistered[$dependency])) {
                         $alreadyRegistered[$dependency] = $dependency;
@@ -283,9 +284,12 @@ class ApieServiceProvider extends ServiceProvider
         TagMap::register($this->app, BackgroundProcessPersistListener::class, ['kernel.event_subscriber']);
     }
 
-    private function sanitizeConfig(Repository $config): void
+    /**
+     * @param array<string, mixed> $rawConfig
+     * @return array<string, mixed>
+     */
+    private function parseConfig(array $rawConfig): array
     {
-        $rawConfig = $config->get('apie');
         $path = storage_path('framework/cache/apie-config' . md5(json_encode($rawConfig)) . '.php');
         $resources = [
             new ReflectionClassResource(new \ReflectionClass(LaravelConfiguration::class)),
@@ -310,6 +314,14 @@ class ApieServiceProvider extends ServiceProvider
             $code = '<?php' . PHP_EOL . 'return ' . var_export($processedConfig, true) . ';';
             $configCache->write($code, $resources);
         }
+
+        return $processedConfig;
+    }
+
+    private function sanitizeConfig(Repository $config): void
+    {
+        $rawConfig = $config->get('apie');
+        $processedConfig = $this->parseConfig($rawConfig);
 
         $config->set('apie', $processedConfig);
     }
