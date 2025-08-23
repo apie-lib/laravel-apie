@@ -58,6 +58,10 @@ use Symfony\Component\Lock\LockFactory;
 class ApieServiceProvider extends ServiceProvider
 {
     /**
+     * @var array<string, class-string<ServiceProvider>> $alreadyRegistered
+     */
+    private array $alreadyRegistered = [];
+    /**
      * @var array<string, array<int, class-string<ServiceProvider>>> $dependencies
      */
     private array $dependencies = [
@@ -252,18 +256,19 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->bind(DashboardContentFactoryInterface::class, DashboardContentFactory::class);
         $this->app->bind(BoundedContextSelection::class, BoundedContextSelected::class);
 
-        $alreadyRegistered = [];
+        $this->alreadyRegistered = [];
         $parsedConfig = $this->parseConfig(config('apie'));
         foreach ($this->dependencies as $configKey => $dependencies) {
             if ($parsedConfig[$configKey] ?? false) {
                 foreach ($dependencies as $dependency) {
-                    if (!isset($alreadyRegistered[$dependency])) {
-                        $alreadyRegistered[$dependency] = $dependency;
+                    if (!isset($this->alreadyRegistered[$dependency])) {
+                        $this->alreadyRegistered[$dependency] = $dependency;
                         $this->app->register($dependency);
                     }
                 }
             }
         }
+
         //$this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
         TagMap::register($this->app, CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
@@ -277,7 +282,17 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->extend('config', function (Repository $config) {
             $this->sanitizeConfig($config);
-        
+            $newParsedConfig = $config->get('apie');
+            foreach ($this->dependencies as $configKey => $dependencies) {
+                if ($newParsedConfig[$configKey] ?? false) {
+                    foreach ($dependencies as $dependency) {
+                        if (!isset($this->alreadyRegistered[$dependency])) {
+                            $this->alreadyRegistered[$dependency] = $dependency;
+                            $this->app->register($dependency);
+                        }
+                    }
+                }
+            }
             return $config;
         });
 

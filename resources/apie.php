@@ -69,6 +69,8 @@ return [
     /* 'enable_doctrine_bundle_connection'  symfony only*/
     'enable_faker' => class_exists(ApieObjectFaker::class),
     'enable_maker' => class_exists(Utils::class),
+    'enable_mcp_server' => class_exists(\Apie\McpServer\Controllers\RemoteMcpController::class),
+    'remote_mcp_path' => null,
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
