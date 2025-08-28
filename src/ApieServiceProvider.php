@@ -86,7 +86,7 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_console' => [
             CommonServiceProvider::class,
-            ConsoleServiceProvider::class,
+            ConsoleServiceProvider::class, // it's important that this loads after CommonServiceProvider!!!
             SerializerServiceProvider::class,
         ],
         'enable_doctrine_entity_converter' => [
