@@ -9,6 +9,7 @@ use Apie\Core\Actions\ActionResponseStatus;
 use Apie\Core\BoundedContext\BoundedContextId;
 use Apie\Core\ContextConstants;
 use Apie\Core\Entities\EntityInterface;
+use Apie\RestApi\Exceptions\InvalidContentTypeException;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\ResponseInterface;
@@ -21,13 +22,17 @@ class VerifyApieUser extends FormCommitController
     public function handle(Request $request, Closure $next): Response
     {
         $psrRequest = app(ServerRequestInterface::class);
-        $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
-        $decryptedAuthenticatedUser = $context->getContext(DecryptedAuthenticatedUser::class, false);
-        if ($context->hasContext(ContextConstants::AUTHENTICATED_USER)
-            && $decryptedAuthenticatedUser instanceof DecryptedAuthenticatedUser) {
-            $userIdentifier = $decryptedAuthenticatedUser->toNative();
-            $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
-            Auth::login($user);
+        try {
+            $context = $this->contextBuilderFactory->createFromRequest($psrRequest);
+            $decryptedAuthenticatedUser = $context->getContext(DecryptedAuthenticatedUser::class, false);
+            if ($context->hasContext(ContextConstants::AUTHENTICATED_USER)
+                && $decryptedAuthenticatedUser instanceof DecryptedAuthenticatedUser) {
+                $userIdentifier = $decryptedAuthenticatedUser->toNative();
+                $user = resolve(ApieUserProvider::class)->retrieveById($userIdentifier);
+                Auth::login($user);
+            }
+        } catch (InvalidContentTypeException) {
+            // Ignore invalid content type exceptions here.
         }
         
         if (!$this->supports($psrRequest)) {

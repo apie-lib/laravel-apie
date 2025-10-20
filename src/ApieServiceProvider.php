@@ -3,6 +3,7 @@ namespace Apie\LaravelApie;
 
 use Apie\AiInstructor\AiInstructorServiceProvider;
 use Apie\ApieCommonPlugin\ApieCommonPluginServiceProvider;
+use Apie\ApieFileSystem\ApieFileSystemServiceProvider;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\ContextBuilders\FrameworkContextBuilder;

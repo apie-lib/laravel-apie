@@ -8,6 +8,7 @@ use Apie\Common\Interfaces\RouteDefinitionProviderInterface;
 use Apie\Common\RouteDefinitions\PossibleRoutePrefixProvider;
 use Apie\Core\BoundedContext\BoundedContextHashmap;
 use Apie\Core\Context\ApieContext;
+use Apie\Core\Enums\RequestMethod;
 use Apie\Core\ValueObjects\Utils;
 use Apie\LaravelApie\Wrappers\Security\VerifyApieUser;
 use Illuminate\Routing\RouteRegistrar;
@@ -46,7 +47,15 @@ class ApieRouteLoader
                         'uses' => $routeDefinition->getController(),
                     ];
                 /** @var \Illuminate\Routing\Route $route */
-                $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
+                if ($method === RequestMethod::ANY) {
+                    $route = $routeRegistrar->match(
+                        array_map(fn($s) => $s->value, RequestMethod::cases()),
+                        $path,
+                        $routeDefinition->getController()
+                    );
+                } else {   
+                    $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
+                }
                 $route->defaults += $defaults;
                 $route->name('apie.global.' . $routeDefinition->getOperationId());
                 $route->middleware([StartSession::class, VerifyApieUser::class, ...$cmsMiddleware]);
@@ -67,7 +76,15 @@ class ApieRouteLoader
                         'uses' => $routeDefinition->getController(),
                     ];
                 /** @var \Illuminate\Routing\Route $route */
-                $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
+                if ($method === RequestMethod::ANY) {
+                    $route = $routeRegistrar->match(
+                        array_map(fn($s) => $s->value, RequestMethod::cases()),
+                        $path,
+                        $routeDefinition->getController()
+                    );
+                } else {   
+                    $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
+                }
                 $route->defaults += $defaults;
                 $route->name('apie.' . $boundedContextId . '.' . $routeDefinition->getOperationId());
                 foreach ($routeDefinition->getUrlPrefixes() as $urlPrefix) {
