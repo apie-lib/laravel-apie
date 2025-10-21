@@ -75,4 +75,5 @@ return [
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
     'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
+    'enable_webdav' => class_exists(\Apie\Webdav\Dav\ApieDirectory::class),
 ];

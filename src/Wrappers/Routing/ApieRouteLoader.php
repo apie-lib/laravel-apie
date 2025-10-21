@@ -49,11 +49,11 @@ class ApieRouteLoader
                 /** @var \Illuminate\Routing\Route $route */
                 if ($method === RequestMethod::ANY) {
                     $route = $routeRegistrar->match(
-                        array_map(fn($s) => $s->value, RequestMethod::cases()),
+                        array_map(fn ($s) => $s->value, RequestMethod::cases()),
                         $path,
                         $routeDefinition->getController()
                     );
-                } else {   
+                } else {
                     $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
                 }
                 $route->defaults += $defaults;
@@ -78,11 +78,11 @@ class ApieRouteLoader
                 /** @var \Illuminate\Routing\Route $route */
                 if ($method === RequestMethod::ANY) {
                     $route = $routeRegistrar->match(
-                        array_map(fn($s) => $s->value, RequestMethod::cases()),
+                        array_map(fn ($s) => $s->value, RequestMethod::cases()),
                         $path,
                         $routeDefinition->getController()
                     );
-                } else {   
+                } else {
                     $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
                 }
                 $route->defaults += $defaults;
