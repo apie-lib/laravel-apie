@@ -38,8 +38,9 @@ class ApieRouteLoader
         if ($this->routeProvider instanceof GlobalRouteDefinitionProviderInterface) {
             foreach ($this->routeProvider->getGlobalRoutes() as $routeDefinition) {
                 /** @var HasRouteDefinition $routeDefinition */
-
-                $path = ltrim($routeDefinition->getUrl(), '/');
+                $url = $routeDefinition->getUrl();
+                $placeholders = $url->getPlaceholders();
+                $path = ltrim($url->toNative(), '/');
                 $method = $routeDefinition->getMethod();
                 $defaults = $routeDefinition->getRouteAttributes()
                     + [
@@ -59,6 +60,12 @@ class ApieRouteLoader
                 $route->defaults += $defaults;
                 $route->name('apie.global.' . $routeDefinition->getOperationId());
                 $route->middleware([StartSession::class, VerifyApieUser::class, ...$cmsMiddleware]);
+                if (in_array('properties', $placeholders)) {
+                    $route->where('properties', '[a-zA-Z0-9]+(/[a-zA-Z0-9]+)*');
+                }
+                if (in_array('path', $placeholders)) {
+                    $route->where('path', '.*');
+                }
             }
         }
         
@@ -66,8 +73,9 @@ class ApieRouteLoader
             foreach ($this->routeProvider->getActionsForBoundedContext($boundedContext, $apieContext) as $routeDefinition) {
                 /** @var HasRouteDefinition $routeDefinition */
                 $prefix = $this->routePrefixProvider->getPossiblePrefixes($routeDefinition);
-
-                $path = $prefix . $boundedContextId . '/' . ltrim($routeDefinition->getUrl(), '/');
+                $url = $routeDefinition->getUrl();
+                $placeholders = $url->getPlaceholders();
+                $path = $prefix . $boundedContextId . '/' . ltrim($url->toNative(), '/');
 
                 $method = $routeDefinition->getMethod();
                 $defaults = $routeDefinition->getRouteAttributes()
@@ -95,6 +103,12 @@ class ApieRouteLoader
                     }
                 }
                 $route->wheres = $prefix->getRouteRequirements();
+                if (in_array('properties', $placeholders)) {
+                    $route->where('properties', '[a-zA-Z0-9]+(/[a-zA-Z0-9]+)*');
+                }
+                if (in_array('path', $placeholders)) {
+                    $route->where('path', '.*');
+                }
             }
         }
     }
