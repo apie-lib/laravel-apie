@@ -8,6 +8,7 @@ use Apie\Common\Wrappers\RequestAwareInMemoryDatalayer;
 use Apie\Console\ConsoleCommandFactory;
 use Apie\DoctrineEntityConverter\OrmBuilder;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayer;
+use Apie\Export\ExportServiceProvider;
 use Apie\Faker\ApieObjectFaker;
 use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
@@ -67,6 +68,7 @@ return [
     'enable_doctrine_entity_converter' => class_exists(OrmBuilder::class),
     'enable_doctrine_entity_datalayer' => class_exists(DoctrineEntityDatalayer::class),
     /* 'enable_doctrine_bundle_connection'  symfony only*/
+    'enable_export' => class_exists(ExportServiceProvider::class),
     'enable_faker' => class_exists(ApieObjectFaker::class),
     'enable_maker' => class_exists(Utils::class),
     'enable_mcp_server' => class_exists(\Apie\McpServer\Controllers\RemoteMcpController::class),

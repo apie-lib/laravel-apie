@@ -22,6 +22,7 @@ use Apie\DoctrineEntityDatalayer\IndexStrategy\BackgroundIndexStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\DirectIndexStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexAfterResponseIsSentStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexStrategyInterface;
+use Apie\Export\ExportServiceProvider;
 use Apie\Faker\FakerServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
@@ -99,6 +100,10 @@ class ApieServiceProvider extends ServiceProvider
             CoreServiceProvider::class,
             DoctrineEntityConverterProvider::class,
             DoctrineEntityDatalayerServiceProvider::class,
+        ],
+        'enable_export' => [
+            SerializerServiceProvider::class,
+            ExportServiceProvider::class,
         ],
         'enable_security' => [
             CommonServiceProvider::class,
