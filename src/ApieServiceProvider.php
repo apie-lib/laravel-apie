@@ -5,6 +5,7 @@ use Apie\AiInstructor\AiInstructorServiceProvider;
 use Apie\ApieCommonPlugin\ApieCommonPluginServiceProvider;
 use Apie\ApieFileSystem\ApieFileSystemServiceProvider;
 use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
+use Apie\Common\AddBasicAuthServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\ContextBuilders\FrameworkContextBuilder;
 use Apie\Common\Interfaces\BoundedContextSelection;
@@ -70,6 +71,9 @@ class ApieServiceProvider extends ServiceProvider
     private array $dependencies = [
         'enable_ai_instructor' => [
             AiInstructorServiceProvider::class,
+        ],
+        'enable_basic_auth' => [
+            AddBasicAuthServiceProvider::class,
         ],
         'enable_common_plugin' => [
             ApieCommonPluginServiceProvider::class,
