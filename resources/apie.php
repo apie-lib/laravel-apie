@@ -10,6 +10,7 @@ use Apie\DoctrineEntityConverter\OrmBuilder;
 use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayer;
 use Apie\Export\ExportServiceProvider;
 use Apie\Faker\ApieObjectFaker;
+use Apie\FtpServer\FtpServerCommand;
 use Apie\Maker\Utils;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
 use Apie\TwigTemplateLayoutRenderer\TwigRenderer;
@@ -70,6 +71,7 @@ return [
     /* 'enable_doctrine_bundle_connection'  symfony only*/
     'enable_export' => class_exists(ExportServiceProvider::class),
     'enable_faker' => class_exists(ApieObjectFaker::class),
+    'enable_ftp' => class_exists(FtpServerCommand::class),
     'enable_maker' => class_exists(Utils::class),
     'enable_mcp_server' => class_exists(\Apie\McpServer\Controllers\RemoteMcpController::class),
     'remote_mcp_path' => null,

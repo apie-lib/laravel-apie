@@ -25,6 +25,7 @@ use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexAfterResponseIsSentStrategy;
 use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexStrategyInterface;
 use Apie\Export\ExportServiceProvider;
 use Apie\Faker\FakerServiceProvider;
+use Apie\FtpServer\FtpServerServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Config\LaravelConfiguration;
@@ -122,6 +123,10 @@ class ApieServiceProvider extends ServiceProvider
         ],
         'enable_faker' => [
             FakerServiceProvider::class,
+        ],
+        'enable_ftp' => [
+            ApieFileSystemServiceProvider::class,
+            FtpServerServiceProvider::class,
         ],
         'enable_maker' => [
             MakerServiceProvider::class,
