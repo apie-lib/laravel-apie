@@ -26,6 +26,7 @@ use Apie\DoctrineEntityDatalayer\IndexStrategy\IndexStrategyInterface;
 use Apie\Export\ExportServiceProvider;
 use Apie\Faker\FakerServiceProvider;
 use Apie\FtpServer\FtpServerServiceProvider;
+use Apie\Graphql\GraphqlServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Config\LaravelConfiguration;
@@ -127,6 +128,11 @@ class ApieServiceProvider extends ServiceProvider
         'enable_ftp' => [
             ApieFileSystemServiceProvider::class,
             FtpServerServiceProvider::class,
+        ],
+        'enable_graphql' => [
+            CommonServiceProvider::class,
+            SerializerServiceProvider::class,
+            GraphqlServiceProvider::class,
         ],
         'enable_maker' => [
             MakerServiceProvider::class,

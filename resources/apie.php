@@ -1,6 +1,7 @@
 <?php
 // apie config file.
 
+use Apie\AiInstructor\AiInstructor;
 use Apie\ApieCommonPlugin\ApieCommonPlugin;
 use Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider;
 use Apie\CmsApiDropdownOption\RouteDefinitions\DropdownOptionsForExistingObjectRouteDefinition;
@@ -11,10 +12,13 @@ use Apie\DoctrineEntityDatalayer\DoctrineEntityDatalayer;
 use Apie\Export\ExportServiceProvider;
 use Apie\Faker\ApieObjectFaker;
 use Apie\FtpServer\FtpServerCommand;
+use Apie\Graphql\RouteDefinitions\GraphqlRouteDefinition;
 use Apie\Maker\Utils;
+use Apie\McpServer\Controllers\RemoteMcpController;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
 use Apie\TwigTemplateLayoutRenderer\TwigRenderer;
 use Apie\TypescriptClientBuilder\RouteDefinitions\CodeRouteDefinitionProvider;
+use Apie\Webdav\Dav\ApieDirectory;
 use Symfony\Component\Lock\Store\FlockStore;
 
 return [
@@ -61,7 +65,7 @@ return [
             'actions_namespace' => 'App\\Apie\\Actions\\',
         ]
     ],
-    'enable_ai_instructor' => class_exists(\Apie\AiInstructor\AiInstructor::class),
+    'enable_ai_instructor' => class_exists(AiInstructor::class),
     'enable_core' => true,
     'enable_common_plugin' => class_exists(ApieCommonPlugin::class),
     'enable_cms' => class_exists(CmsRouteDefinitionProvider::class),
@@ -72,12 +76,13 @@ return [
     'enable_export' => class_exists(ExportServiceProvider::class),
     'enable_faker' => class_exists(ApieObjectFaker::class),
     'enable_ftp' => class_exists(FtpServerCommand::class),
+    'enable_graphql' => class_exists(GraphqlRouteDefinition::class),
     'enable_maker' => class_exists(Utils::class),
-    'enable_mcp_server' => class_exists(\Apie\McpServer\Controllers\RemoteMcpController::class),
+    'enable_mcp_server' => class_exists(RemoteMcpController::class),
     'remote_mcp_path' => null,
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
     'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
-    'enable_webdav' => class_exists(\Apie\Webdav\Dav\ApieDirectory::class),
+    'enable_webdav' => class_exists(ApieDirectory::class),
 ];
