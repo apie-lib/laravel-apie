@@ -204,6 +204,10 @@ class ApieServiceProvider extends ServiceProvider
             }
             $this->commands($commands);
         }
+
+        $this->app->booted(function () {
+            TagMap::markBooted($this->app);
+        });
     }
 
     public function register()
