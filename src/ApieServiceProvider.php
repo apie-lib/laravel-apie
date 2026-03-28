@@ -182,7 +182,6 @@ class ApieServiceProvider extends ServiceProvider
         $this->autoTagHashmapActions();
         $this->loadViewsFrom(__DIR__ . '/../templates', 'apie');
         $this->loadRoutesFrom(__DIR__.'/../resources/routes.php');
-        TagMap::registerEvents($this->app);
 
         if ($this->app->runningInConsole()) {
             $commands = [];
@@ -207,6 +206,7 @@ class ApieServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             TagMap::markBooted($this->app);
+            TagMap::registerEvents($this->app);
         });
     }
 
@@ -310,7 +310,7 @@ class ApieServiceProvider extends ServiceProvider
 
         TagMap::register($this->app, RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
-        $this->app->extend('config', function (Repository $config) {
+        $this->app->resolving('config', function (Repository $config) {
             $this->sanitizeConfig($config);
             $newParsedConfig = $config->get('apie');
             foreach ($this->dependencies as $configKey => $dependencies) {
