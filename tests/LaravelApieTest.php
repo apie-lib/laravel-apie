@@ -25,6 +25,8 @@ final class LaravelApieTest extends TestCase
                         'entities_namespace' => 'Apie\\Tests\\LaravelApie\\Fixtures\\Entities\\',
                         'actions_folder' => __DIR__ . '/Fixtures/Actions',
                         'actions_namespace' => 'Apie\\Tests\\LaravelApie\\Fixtures\\Actions\\',
+                        'policy_folder' => __DIR__ . '/Fixtures/Policies',
+                        'policy_namespace' => 'Apie\\Tests\\LaravelApie\\Fixtures\\Policies\\',
                     ],
                 ]
             );
