@@ -13,6 +13,7 @@ use Apie\Export\ExportServiceProvider;
 use Apie\Faker\ApieObjectFaker;
 use Apie\FtpServer\FtpServerCommand;
 use Apie\Graphql\RouteDefinitions\GraphqlRouteDefinition;
+use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Apie\Maker\Utils;
 use Apie\McpServer\Controllers\RemoteMcpController;
 use Apie\RestApi\OpenApi\OpenApiGenerator;
@@ -21,7 +22,7 @@ use Apie\TypescriptClientBuilder\RouteDefinitions\CodeRouteDefinitionProvider;
 use Apie\Webdav\Dav\ApieDirectory;
 use Symfony\Component\Lock\Store\FlockStore;
 
-return [
+return ValidateAndSanitizeConfig::process([
     'cms' => [
         'base_url' => '/cms',
         'dashboard_template' => 'apie::dashboard',
@@ -87,4 +88,4 @@ return [
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
     'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
     'enable_webdav' => class_exists(ApieDirectory::class),
-];
+]);

@@ -30,6 +30,7 @@ use Apie\Graphql\GraphqlServiceProvider;
 use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Config\LaravelConfiguration;
+use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
 use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ContextBuilders\SessionContextBuilder;
@@ -287,7 +288,7 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->bind(BoundedContextSelection::class, BoundedContextSelected::class);
 
         $this->alreadyRegistered = [];
-        $parsedConfig = $this->parseConfig(config('apie'));
+        $parsedConfig = ValidateAndSanitizeConfig::process(config('apie'));
         foreach ($this->dependencies as $configKey => $dependencies) {
             if ($parsedConfig[$configKey] ?? false) {
                 foreach ($dependencies as $dependency) {
@@ -329,44 +330,10 @@ class ApieServiceProvider extends ServiceProvider
         TagMap::register($this->app, BackgroundProcessPersistListener::class, ['kernel.event_subscriber']);
     }
 
-    /**
-     * @param array<string, mixed> $rawConfig
-     * @return array<string, mixed>
-     */
-    private function parseConfig(array $rawConfig): array
-    {
-        $path = storage_path('framework/cache/apie-config' . md5(json_encode($rawConfig)) . '.php');
-        $resources = [
-            new ReflectionClassResource(new \ReflectionClass(LaravelConfiguration::class)),
-            new ReflectionClassResource(new \ReflectionClass(static::class)),
-        ];
-        $configCache = new ConfigCache($path, true);
-        if ($configCache->isFresh()) {
-            $processedConfig = require $path;
-        } else {
-            $configuration = new LaravelConfiguration();
-
-            $processor = new Processor();
-
-            $processedConfig = $processor->processConfiguration($configuration, ['apie' => $rawConfig]);
-
-            if (!isset($processedConfig['scan_bounded_contexts'])) {
-                $processedConfig['scan_bounded_contexts'] = [];
-            }
-            if (empty($processedConfig['storage'])) {
-                $processedConfig['storage'] = null;
-            }
-            $code = '<?php' . PHP_EOL . 'return ' . var_export($processedConfig, true) . ';';
-            $configCache->write($code, $resources);
-        }
-
-        return $processedConfig;
-    }
-
     private function sanitizeConfig(Repository $config): void
     {
         $rawConfig = $config->get('apie');
-        $processedConfig = $this->parseConfig($rawConfig);
+        $processedConfig = ValidateAndSanitizeConfig::process($rawConfig);
 
         $config->set('apie', $processedConfig);
     }
