@@ -14,6 +14,7 @@ class LaravelConfiguration extends Configuration
         $res = parent::getConfigTreeBuilder();
         $res->getRootNode()
             ->children()
+            ->scalarNode('enable_security')->defaultTrue()->end()
             ->scalarNode('lock_store')->defaultValue(FlockStore::class)->end();
         return $res;
     }

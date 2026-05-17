@@ -3,6 +3,7 @@ namespace Apie\Tests\LaravelApie;
 
 use Apie\Common\ApieFacade;
 use Apie\LaravelApie\ApieServiceProvider;
+use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Illuminate\Contracts\Config\Repository;
 use Orchestra\Testbench\TestCase;
 
@@ -43,6 +44,18 @@ final class LaravelApieTest extends TestCase
     public function it_can_register_apie_as_a_service()
     {
         $this->assertInstanceOf(ApieFacade::class, resolve('apie'));
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    public function testValidateAndSanitizeConfig(): void
+    {
+        $input = [
+            'enable_security' => true,
+        ];
+        $result = ValidateAndSanitizeConfig::process($input);
+        $this->assertArrayHasKey('enable_security', $result);
+        $this->assertTrue($result['enable_security']);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
