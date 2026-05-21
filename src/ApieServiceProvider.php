@@ -8,6 +8,7 @@ use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\AddBasicAuthServiceProvider;
 use Apie\Common\CommonServiceProvider;
 use Apie\Common\ContextBuilders\FrameworkContextBuilder;
+use Apie\Common\Events\AddAuthenticationCookie;
 use Apie\Common\Interfaces\BoundedContextSelection;
 use Apie\Common\Interfaces\DashboardContentFactoryInterface;
 use Apie\Common\Wrappers\BoundedContextHashmapFactory;
@@ -31,6 +32,7 @@ use Apie\HtmlBuilders\ErrorHandler\CmsErrorRenderer;
 use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Config\LaravelConfiguration;
 use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
+use Apie\LaravelApie\ContextBuilders\ApieCurrentUserContextBuilder;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
 use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ContextBuilders\SessionContextBuilder;
@@ -52,6 +54,7 @@ use Apie\Webdav\WebdavServiceProvider;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -213,6 +216,7 @@ class ApieServiceProvider extends ServiceProvider
 
     public function register()
     {
+        EncryptCookies::except(AddAuthenticationCookie::COOKIE_NAME);
         $this->mergeConfigFrom(__DIR__ . '/../resources/apie.php', 'apie');
 
         $this->app->bind(FrameworkContextBuilder::class, function () {
@@ -308,6 +312,10 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->bind(SessionContextBuilder::class);
         TagMap::register($this->app, SessionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(SessionContextBuilder::class, ['apie.core.context_builder']);
+
+        $this->app->bind(ApieCurrentUserContextBuilder::class);
+        TagMap::register($this->app, ApieCurrentUserContextBuilder::class, ['apie.core.context_builder', 'kernel.event_subscriber']);
+        $this->app->tag(ApieCurrentUserContextBuilder::class, ['apie.core.context_builder', 'kernel.event_subscriber']);
 
         TagMap::register($this->app, RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);

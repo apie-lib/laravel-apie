@@ -84,6 +84,7 @@ return ValidateAndSanitizeConfig::process([
     'enable_mcp_server' => class_exists(RemoteMcpController::class),
     'remote_mcp_path' => null,
     'enable_rest_api' => class_exists(OpenApiGenerator::class),
+    'enable_security' => true,
     'enable_console' => class_exists(ConsoleCommandFactory::class),
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
     'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
