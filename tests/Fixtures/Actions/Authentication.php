@@ -33,6 +33,7 @@ class Authentication
     #[Route('/me', requestMethod: RequestMethod::GET)]
     public static function currentUser(#[Context] ?User $authenticated = null): ?User
     {
-        return $authenticated;;
+        return $authenticated;
+        ;
     }
 }

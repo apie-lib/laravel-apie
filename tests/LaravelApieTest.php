@@ -3,16 +3,10 @@ namespace Apie\Tests\LaravelApie;
 
 use Apie\Common\ApieFacade;
 use Apie\Common\Events\AddAuthenticationCookie;
-use Apie\Common\ValueObjects\DecryptedAuthenticatedUser;
-use Apie\Core\BoundedContext\BoundedContextId;
-use Apie\LaravelApie\Apie;
 use Apie\LaravelApie\ApieServiceProvider;
 use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Apie\LaravelApie\Wrappers\Security\ApieUserDecorator;
-use Apie\Tests\LaravelApie\Fixtures\Entities\User;
-use Apie\Tests\LaravelApie\Fixtures\ValueObjects\UserIdentifier;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Cookie\Middleware\EncryptCookies;
 use Orchestra\Testbench\TestCase;
 
 final class LaravelApieTest extends TestCase

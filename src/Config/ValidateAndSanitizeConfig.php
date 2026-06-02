@@ -61,8 +61,8 @@ final class ValidateAndSanitizeConfig
                 $configCache->write($code, $resources);
             }
 
-        self::$cache[$key] = $processedConfig;
-        return $processedConfig;
+            self::$cache[$key] = $processedConfig;
+            return $processedConfig;
         } finally {
             unset(self::$alreadyProcessing[$key]);
         }
