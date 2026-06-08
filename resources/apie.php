@@ -64,8 +64,8 @@ return ValidateAndSanitizeConfig::process([
             'entities_namespace' => 'App\\Apie\\Entities\\',
             'actions_folder' => app_path('Apie/Actions'),
             'actions_namespace' => 'App\\Apie\\Actions\\',
-            'policy_folder' => app_path('Apie/Policies'),
-            'policy_namespace' => 'App\\Apie\\Policies\\',
+            'policies_folder' => app_path('Apie/Policies'),
+            'policies_namespace' => 'App\\Apie\\Policies\\',
         ]
     ],
     'enable_ai_instructor' => class_exists(AiInstructor::class),
