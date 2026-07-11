@@ -5,6 +5,7 @@ use Apie\AiInstructor\AiInstructor;
 use Apie\ApieCommonPlugin\ApieCommonPlugin;
 use Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider;
 use Apie\CmsApiDropdownOption\RouteDefinitions\DropdownOptionsForExistingObjectRouteDefinition;
+use Apie\Common\Config\Configuration;
 use Apie\Common\Wrappers\RequestAwareInMemoryDatalayer;
 use Apie\Console\ConsoleCommandFactory;
 use Apie\DoctrineEntityConverter\OrmBuilder;
@@ -89,4 +90,5 @@ return ValidateAndSanitizeConfig::process([
     'enable_twig_template_layout_renderer' => class_exists(TwigRenderer::class),
     'enable_typescript_client_builder' => class_exists(CodeRouteDefinitionProvider::class),
     'enable_webdav' => class_exists(ApieDirectory::class),
+    'language_typehint' => Configuration::getDefaultLanguageTypehint(),
 ]);
