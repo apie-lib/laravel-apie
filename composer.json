@@ -20,6 +20,9 @@
     }
   },
   "extra": {
+    "apie-objects": [
+    "Apie\\LaravelApie\\Wrappers\\Security\\LaravelUserDecoratorIdentifier"
+],
     "laravel": {
         "providers": [
             "Apie\\LaravelApie\\ApieServiceProvider"
