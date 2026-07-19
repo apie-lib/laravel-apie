@@ -33,6 +33,7 @@ use Apie\HtmlBuilders\HtmlBuilderServiceProvider;
 use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Apie\LaravelApie\ContextBuilders\ApieCurrentUserContextBuilder;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
+use Apie\LaravelApie\ContextBuilders\LaravelLocaleContextBuilder;
 use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ContextBuilders\SessionContextBuilder;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
@@ -299,6 +300,9 @@ class ApieServiceProvider extends ServiceProvider
                 }
             }
         }
+
+        TagMap::register($this->app, LaravelLocaleContextBuilder::class, ['apie.core.context_builder']);
+        $this->app->tag(LaravelLocaleContextBuilder::class, ['apie.core.context_builder']);
 
         //$this->app->bind(CsrfTokenProvider::class, CsrfTokenContextBuilder::class);
         TagMap::register($this->app, CsrfTokenContextBuilder::class, ['apie.core.context_builder']);
