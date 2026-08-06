@@ -58,9 +58,16 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\ServiceProvider;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Component\Cache\Adapter\PhpArrayAdapter;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Lock\LockFactory;
+use Symfony\UX\Icons\IconFactory;
+use Symfony\UX\Icons\Iconify;
+use Symfony\UX\Icons\IconRegistryInterface;
+use Symfony\UX\Icons\Registry\IconifyOnDemandRegistry;
+use Twig\RuntimeLoader\ContainerRuntimeLoader;
 
 class ApieServiceProvider extends ServiceProvider
 {
@@ -336,6 +343,27 @@ class ApieServiceProvider extends ServiceProvider
         });
 
         TagMap::register($this->app, BackgroundProcessPersistListener::class, ['kernel.event_subscriber']);
+        if (interface_exists(IconRegistryInterface::class)) {
+            $this->app->bind(IconRegistryInterface::class, function () {
+                if (class_exists(IconFactory::class)) {
+                    return new IconifyOnDemandRegistry(
+                        new Iconify(
+                            new PhpArrayAdapter(sys_get_temp_dir() . '/icons', new NullAdapter()),
+                            new IconFactory()
+                        )
+                    );
+                }
+                return new IconifyOnDemandRegistry(
+                    new Iconify(
+                        new PhpArrayAdapter(sys_get_temp_dir() . '/icons', new NullAdapter())
+                    )
+                );
+            });
+
+            $this->app->bind('twig.runtime_loader', function () {
+                return new ContainerRuntimeLoader($this->app);
+            });
+        }
     }
 
     private function sanitizeConfig(Repository $config): void
