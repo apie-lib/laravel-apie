@@ -55,6 +55,7 @@ class ApieRouteLoader
                         $routeDefinition->getController()
                     );
                 } else {
+                    // @phpstan-ignore-next-line method.notFound
                     $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
                 }
                 $route->defaults += $defaults;
@@ -91,6 +92,7 @@ class ApieRouteLoader
                         $routeDefinition->getController()
                     );
                 } else {
+                    // @phpstan-ignore-next-line method.notFound
                     $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
                 }
                 $route->defaults += $defaults;
