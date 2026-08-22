@@ -30,11 +30,11 @@
     }
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "apie/common": "self.version",
     "apie/core": "self.version",
     "apie/service-provider-generator": "0.14.0",
-    "laravel/framework": "^11.0.0|^12.0.0",
+    "laravel/framework": "^11.0.0|^12.0.0|^13.0.0",
     "symfony/cache": "^7.4",
     "symfony/lock": "^7.2",
     "symfony/psr-http-message-bridge": "^7.2"
@@ -42,7 +42,7 @@
   "require-dev": {
     "apie/rest-api": "self.version",
     "phpunit/phpunit": "^11.5.2",
-    "phpspec/prophecy-phpunit": "^2.2"
+    "phpspec/prophecy-phpunit": "^2.5"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
