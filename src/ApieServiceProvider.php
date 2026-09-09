@@ -34,6 +34,7 @@ use Apie\LaravelApie\Config\ValidateAndSanitizeConfig;
 use Apie\LaravelApie\ContextBuilders\ApieCurrentUserContextBuilder;
 use Apie\LaravelApie\ContextBuilders\CsrfTokenContextBuilder;
 use Apie\LaravelApie\ContextBuilders\LaravelLocaleContextBuilder;
+use Apie\LaravelApie\ContextBuilders\LogoutUrlContextBuilder;
 use Apie\LaravelApie\ContextBuilders\RegisterBoundedContextActionContextBuilder;
 use Apie\LaravelApie\ContextBuilders\SessionContextBuilder;
 use Apie\LaravelApie\ErrorHandler\ApieErrorRenderer;
@@ -320,6 +321,12 @@ class ApieServiceProvider extends ServiceProvider
         $this->app->bind(ApieCurrentUserContextBuilder::class);
         TagMap::register($this->app, ApieCurrentUserContextBuilder::class, ['apie.core.context_builder', 'kernel.event_subscriber']);
         $this->app->tag(ApieCurrentUserContextBuilder::class, ['apie.core.context_builder', 'kernel.event_subscriber']);
+
+        $this->app->bind(LogoutUrlContextBuilder::class, function () {
+            return new LogoutUrlContextBuilder(config('apie.logout_url'));
+        });
+        TagMap::register($this->app, LogoutUrlContextBuilder::class, ['apie.core.context_builder']);
+        $this->app->tag(LogoutUrlContextBuilder::class, ['apie.core.context_builder']);
 
         TagMap::register($this->app, RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);
         $this->app->tag(RegisterBoundedContextActionContextBuilder::class, ['apie.core.context_builder']);

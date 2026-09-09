@@ -15,7 +15,8 @@ class LaravelConfiguration extends Configuration
         $res->getRootNode()
             ->children()
             ->scalarNode('enable_security')->defaultTrue()->end()
-            ->scalarNode('lock_store')->defaultValue(FlockStore::class)->end();
+            ->scalarNode('lock_store')->defaultValue(FlockStore::class)->end()
+            ->scalarNode('logout_url')->defaultNull()->end();
         return $res;
     }
 
