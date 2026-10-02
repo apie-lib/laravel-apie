@@ -2,6 +2,7 @@
 
 namespace Apie\LaravelApie;
 
+use Apie\Common\Events\AddAuthenticationCookie;
 use Apie\Common\ValueObjects\DecryptedAuthenticatedUser;
 use Apie\Core\Actions\ActionInterface;
 use Apie\Core\Actions\ApieFacadeInterface;
@@ -17,6 +18,7 @@ use Apie\LaravelApie\ContextBuilders\ApieCurrentUserContextBuilder;
 use Apie\LaravelApie\Wrappers\Core\BoundedContextSelected;
 use Apie\LaravelApie\Wrappers\Security\ApieUserDecorator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 use ReflectionMethod;
@@ -73,10 +75,19 @@ class Apie extends Facade
         self::$currentUser = $decryptedUserId;
     }
 
+    /**
+     * Logs a user out and removes the authentication cookie apie uses, so the request is not
+     * re-authenticated again by the cookie that was previously set.
+     *
+     * Laravel has no reliable way to detect a logout the way symfony's LogoutEvent does (the
+     * `logout_url` config simply points to an application route), so applications must call this
+     * method from their own logout route/controller to guarantee the cookie is actually removed.
+     */
     public static function logout(): void
     {
         Auth::logout();
         self::$currentUser = null;
+        Cookie::queue(Cookie::forget(AddAuthenticationCookie::COOKIE_NAME));
     }
 
     /**
