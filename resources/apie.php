@@ -4,7 +4,7 @@
 use Apie\AiInstructor\AiInstructor;
 use Apie\ApieCommonPlugin\ApieCommonPlugin;
 use Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider;
-use Apie\CmsApiDropdownOption\RouteDefinitions\DropdownOptionsForExistingObjectRouteDefinition;
+use Apie\CmsApiDropdownOption\CmsDropdownServiceProvider;
 use Apie\Common\Config\Configuration;
 use Apie\Common\Wrappers\RequestAwareInMemoryDatalayer;
 use Apie\Console\ConsoleCommandFactory;
@@ -73,7 +73,7 @@ return ValidateAndSanitizeConfig::process([
     'enable_core' => true,
     'enable_common_plugin' => class_exists(ApieCommonPlugin::class),
     'enable_cms' => class_exists(CmsRouteDefinitionProvider::class),
-    'enable_cms_dropdown' => class_exists(DropdownOptionsForExistingObjectRouteDefinition::class),
+    'enable_cms_dropdown' => class_exists(CmsDropdownServiceProvider::class),
     'enable_doctrine_entity_converter' => class_exists(OrmBuilder::class),
     'enable_doctrine_entity_datalayer' => class_exists(DoctrineEntityDatalayer::class),
     /* 'enable_doctrine_bundle_connection'  symfony only*/

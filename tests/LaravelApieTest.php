@@ -21,6 +21,8 @@ final class LaravelApieTest extends TestCase
         tap($app->make('config'), function (Repository $config) {
             $config->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
             $config->set('apie.encryption_key', 'test');
+            $config->set('apie.enable_cms', false);
+            $config->set('apie.enable_cms_dropdown', true);
             $config->set('apie.enable_security', true);
             $config->set(
                 'apie.bounded_contexts',
@@ -95,5 +97,15 @@ final class LaravelApieTest extends TestCase
         $response = $this->get('/api/default/openapi.yaml');
         $response->assertOk();
         $response->assertSeeText('TestEntity-post');
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    public function it_can_use_rest_api_when_cms_is_disabled_and_dropdown_is_enabled(): void
+    {
+        $this->assertFalse(config('apie.enable_cms'));
+        $response = $this->get('/api/default/openapi.yaml');
+        $response->assertOk();
+        $response->assertSeeText('cms.dropdown_options');
     }
 }
