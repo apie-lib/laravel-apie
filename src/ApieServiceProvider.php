@@ -187,7 +187,9 @@ class ApieServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $commands = [];
-            $commands[] = ApieUpdateIdfCommand::class;
+            if ($this->app->bound(ApieUpdateIdfCommand::class)) {
+                $commands[] = ApieUpdateIdfCommand::class;
+            }
             // for some reason these are not called in integration tests without re-registering them
             foreach (TagMap::getServiceIdsWithTag($this->app, 'console.command') as $taggedCommand) {
                 $serviceId = 'apie.console.tagged.' . $taggedCommand;
@@ -196,12 +198,14 @@ class ApieServiceProvider extends ServiceProvider
                 });
                 $commands[] = $serviceId;
             }
-            /** @var CommonConsoleCommandFactory $factory */
-            $factory = $this->app->get('apie.console.factory');
-            foreach ($factory->create($this->app->get(Application::class)) as $command) {
-                $serviceId = 'apie.console.registered.' . $command->getName();
-                $this->app->instance($serviceId, $command);
-                $commands[] = $serviceId;
+            if ($this->app->bound('apie.console.factory')) {
+                /** @var CommonConsoleCommandFactory $factory */
+                $factory = $this->app->get('apie.console.factory');
+                foreach ($factory->create($this->app->get(Application::class)) as $command) {
+                    $serviceId = 'apie.console.registered.' . $command->getName();
+                    $this->app->instance($serviceId, $command);
+                    $commands[] = $serviceId;
+                }
             }
             $this->commands($commands);
         }
