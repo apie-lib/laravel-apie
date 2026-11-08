@@ -54,6 +54,12 @@ class ApieRouteLoader
                         $path,
                         $routeDefinition->getController()
                     );
+                } elseif ($method === RequestMethod::QUERY) {
+                    $route = $routeRegistrar->match(
+                        [$method->value],
+                        $path,
+                        $routeDefinition->getController()
+                    );
                 } else {
                     // @phpstan-ignore-next-line method.notFound
                     $route = $routeRegistrar->{strtolower($method->value)}($path, $routeDefinition->getController());
@@ -88,6 +94,12 @@ class ApieRouteLoader
                 if ($method === RequestMethod::ANY) {
                     $route = $routeRegistrar->match(
                         array_map(fn ($s) => $s->value, RequestMethod::cases()),
+                        $path,
+                        $routeDefinition->getController()
+                    );
+                } elseif ($method === RequestMethod::QUERY) {
+                    $route = $routeRegistrar->match(
+                        [$method->value],
                         $path,
                         $routeDefinition->getController()
                     );
